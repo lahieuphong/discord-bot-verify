@@ -6,6 +6,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
 import type { EnvironmentVariables } from '../config/environment.js';
+import { INSTRUCTION_PROMPT } from '../config/utils/const.js';
 
 export interface GeminiAnswer {
   answer: string;
@@ -44,8 +45,7 @@ export class GeminiService {
         contents: question,
         config: {
           maxOutputTokens: 1_200,
-          systemInstruction:
-            'Answer the user clearly and accurately. Format the answer using Discord-compatible Markdown. You may use headings, bold, italics, lists, block quotes, links, and fenced code blocks. Avoid HTML and Markdown tables.',
+          systemInstruction: INSTRUCTION_PROMPT,
         },
       });
       const answer = response.text?.trim();
