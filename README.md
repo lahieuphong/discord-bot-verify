@@ -7,6 +7,15 @@ exposes health at `GET /`, Discord status at `GET /ping`, and Gemini questions a
 number, and CCCD through a private modal to receive the `member` role.
 Registration data is persisted through Prisma in PostgreSQL.
 
+## Deploy
+
+Production runs on the .239 server as the NSSM service `discord-bot`
+(https://discord-bot.hongvan.net). Every push to `main` is tested, built and
+deployed by the `Deploy 239` workflow on the self-hosted runner
+`vdd-239-verify`; the bot is offline for about 10 seconds and rolls back
+automatically if the new version does not come online. See
+[docs/CI_CD.md](docs/CI_CD.md).
+
 ## Requirements
 
 - Node.js 22.22.3 or newer

@@ -1,0 +1,73 @@
+# Deploy 239: everything runs on the self-hosted runner "vdd-239-verify"
+# installed on the .239 server (self-hosted runners use no GitHub Actions
+# minutes). It is separate from the runners of the other bots
+# ("vdd-239" and "vdd-239-filter").
+#   - every push / pull request to main: lint + unit + e2e tests + build
+#   - push to main (or a manual run on main): deploy/windows/Deploy.ps1
+#     prepares the new version beside the running bot and swaps it in
+#     (~10 s offline, automatic rollback if it does not come online)
+# See docs/CI_CD.md.
+name: Deploy 239
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One run at a time on the server; a newer push waits for the running one
+# instead of cancelling it half-way through a deploy.
+concurrency:
+  group: deploy-239-verify
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Test, build & deploy
+    runs-on: [self-hosted, windows, vdd-239-verify]
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Node version
+        run: node -v; npm.cmd -v
+
+      - name: Install
+        run: |
+          npm.cmd ci --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Lint
+        run: |
+          npm.cmd run lint
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Unit tests
+        run: |
+          npm.cmd test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: E2E tests
+        run: |
+          npm.cmd run test:e2e
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Build
+        run: |
+          npm.cmd run build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Deploy.ps1
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File .\deploy\windows\Deploy.ps1 -Source $env:GITHUB_WORKSPACE
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
