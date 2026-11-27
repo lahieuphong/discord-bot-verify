@@ -24,6 +24,7 @@ import {
 import type { EnvironmentVariables } from '../config/environment.js';
 import { normalizeCccd } from '../config/utils/cccd-validator.js';
 import { normalizeVietnameseMobileNumber } from '../config/utils/vietnamese-phone-validator.js';
+import { AuditService } from '../audit/audit.service.js';
 import { PrismaService } from '../database/prisma.service.js';
 import { VerificationPromptDelivery } from '../generated/prisma/client.js';
 
@@ -53,7 +54,22 @@ export class UserVerificationService {
   constructor(
     private readonly configService: ConfigService<EnvironmentVariables, true>,
     private readonly prisma: PrismaService,
+    private readonly auditService: AuditService,
   ) { }
+
+  /** Nhật ký: who, never their phone number or CCCD. */
+  private audit(
+    action: 'verification_submitted' | 'role_restored',
+    user: { id: string; username: string },
+    detail: string,
+  ): void {
+    this.auditService.record({
+      source: 'discord',
+      action,
+      actor: user.username ? `${user.username} (${user.id})` : user.id,
+      detail,
+    });
+  }
 
   /**
    * A new (or returning) member gets one mention in the verification channel
@@ -177,6 +193,7 @@ export class UserVerificationService {
 
     if (existingUser) {
       await this.restoreMemberRole(member, role);
+      this.audit('role_restored', member.user, 'Khi bot khởi động');
       return 'restored';
     }
 
@@ -370,6 +387,7 @@ export class UserVerificationService {
       // removed) gets it back right away instead of waiting for a restart.
       if (!hasRole) {
         await this.restoreMemberRole(interaction.member, role);
+        this.audit('role_restored', interaction.user, 'Khi bấm nút xác thực');
         this.logger.log(
           `Restored verified role for registered member ${interaction.user.id} after a button click`,
         );
@@ -576,11 +594,17 @@ export class UserVerificationService {
 
     if (this.hasVerifiedRole(member, role)) {
       // e.g. a promoted member submitting an old form: keep their roles as is.
+      this.audit('verification_submitted', interaction.user, 'Đã có vai trò');
       await interaction.editReply('Xác thực thành công.');
       return;
     }
 
     await member.roles.add(role, 'User information submitted');
+    this.audit(
+      'verification_submitted',
+      interaction.user,
+      `Được cấp vai trò ${role.name}`,
+    );
     await interaction.editReply(
       `Xác thực thành công. Bạn đã được cấp vai trò **${role.name}**.`,
     );

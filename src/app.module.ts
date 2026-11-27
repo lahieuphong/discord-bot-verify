@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { AuditModule } from './audit/audit.module.js';
 import { validateEnvironment } from './config/environment.js';
 import { DiscordModule } from './discord/discord.module.js';
 import { ExcelExportModule } from './export/excel-export.module.js';
@@ -15,6 +16,7 @@ import { QuestionModule } from './question/question.module.js';
       isGlobal: true,
       validate: validateEnvironment,
     }),
+    AuditModule,
     GeminiModule,
     DiscordModule,
     QuestionModule,

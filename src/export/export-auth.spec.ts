@@ -1,3 +1,4 @@
+import { AuditService } from '../audit/audit.service.js';
 import type { INestApplication } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
@@ -27,6 +28,7 @@ function configWith(credentials: Partial<EnvironmentVariables>) {
 
 describe('admin page login', () => {
   let app: INestApplication;
+  const auditRecord = vi.fn();
 
   async function createApp(
     credentials: Partial<EnvironmentVariables> = {
@@ -37,6 +39,7 @@ describe('admin page login', () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [ExcelExportController],
       providers: [
+        { provide: AuditService, useValue: { record: auditRecord } },
         ExportAuthService,
         ExportSessionGuard,
         LiveUpdatesService,
@@ -123,6 +126,25 @@ describe('admin page login', () => {
     expect(response.status).toBe(401);
     expect(response.body.message).toBe('Sai tên đăng nhập hoặc mật khẩu.');
     expect(response.headers['set-cookie']).toBeUndefined();
+    expect(auditRecord).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        source: 'web',
+        action: 'login_failed',
+        actor: USERNAME,
+      }),
+    );
+  });
+
+  it('never logs a password typed into the username box', async () => {
+    const server = await createApp();
+
+    await request(server)
+      .post('/export-excel/api/login')
+      .send({ username: PASSWORD, password: PASSWORD });
+
+    expect(auditRecord).toHaveBeenLastCalledWith(
+      expect.objectContaining({ action: 'login_failed', actor: '[đã ẩn]' }),
+    );
   });
 
   it('rejects a login without fields', async () => {

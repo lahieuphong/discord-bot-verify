@@ -100,3 +100,23 @@ model GeminiRequest {
   @@index([createdAt])
   @@map("gemini_requests")
 }
+
+/// Who did what on the admin page (/export-excel) and which verification
+/// events happened in Discord, for the "Nhật ký" tab. Kept 180 days. Never
+/// holds phone numbers, CCCDs or Gemini keys.
+model AdminAuditLog {
+  id     Int      @id @default(autoincrement())
+  at     DateTime @default(now())
+  /// "web" (admin page) or "discord".
+  source String   @db.VarChar(16)
+  /// e.g. "login", "excel_download" (see src/audit/audit.types.ts).
+  action String   @db.VarChar(32)
+  /// Admin username, the username tried at login, or "name (discord id)".
+  actor  String?  @db.VarChar(120)
+  ip     String?  @db.VarChar(64)
+  detail String?  @db.VarChar(300)
+
+  @@index([at])
+  @@index([action, id])
+  @@map("admin_audit_log")
+}

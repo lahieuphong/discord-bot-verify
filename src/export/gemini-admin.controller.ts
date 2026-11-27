@@ -24,6 +24,7 @@ import {
   type GeminiKeyInfo,
 } from '../gemini/gemini.service.js';
 import { getClientIp } from './export-auth.service.js';
+import { AdminAuditService } from './admin-audit.service.js';
 import { ExportSessionGuard } from './export-session.guard.js';
 
 export interface GeminiOverview {
@@ -69,6 +70,7 @@ export class GeminiAdminController {
   constructor(
     private readonly geminiService: GeminiService,
     private readonly usageService: GeminiUsageService,
+    private readonly adminAudit: AdminAuditService,
   ) {}
 
   @Get()
@@ -93,8 +95,14 @@ export class GeminiAdminController {
   @Post('check')
   @HttpCode(HttpStatus.OK)
   @Header('Cache-Control', 'no-store')
-  check(): Promise<GeminiKeyCheck> {
-    return this.geminiService.checkKey();
+  async check(@Req() request: Request): Promise<GeminiKeyCheck> {
+    const result = await this.geminiService.checkKey();
+    this.adminAudit.record(
+      request,
+      'gemini_key_check',
+      result.ok ? 'Key hoạt động' : `Lỗi: ${result.error.message}`,
+    );
+    return result;
   }
 
   @Put('key')
@@ -112,7 +120,23 @@ export class GeminiAdminController {
       throw new BadRequestException('Vui lòng nhập key mới.');
     }
 
-    const key = await this.geminiService.replaceKey(apiKey);
+    let key: GeminiKeyInfo;
+    try {
+      key = await this.geminiService.replaceKey(apiKey);
+    } catch (error) {
+      // Never the key itself: only why it was refused.
+      this.adminAudit.record(
+        request,
+        'gemini_key_rejected',
+        error instanceof Error ? error.message : String(error),
+      );
+      throw error;
+    }
+    this.adminAudit.record(
+      request,
+      'gemini_key_replace',
+      `Key mới ${key.masked ?? ''}`.trim(),
+    );
     this.logger.log(
       `Gemini key replaced from ${getClientIp(request)} (now ${key.masked})`,
     );
@@ -136,6 +160,13 @@ export class GeminiAdminController {
       tpm: readLimit(record, 'tpm'),
     });
     this.logger.log(`Gemini limits changed from ${getClientIp(request)}`);
+    const text = (value: number | null) =>
+      value === null ? 'chưa biết' : String(value);
+    this.adminAudit.record(
+      request,
+      'gemini_limits_update',
+      `RPD ${text(limits.rpd)} · RPM ${text(limits.rpm)} · TPM ${text(limits.tpm)}`,
+    );
     return limits;
   }
 }

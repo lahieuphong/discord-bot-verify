@@ -195,3 +195,36 @@ export interface AssistantTestAnswer {
   durationMs: number;
   discordMessages: number;
 }
+
+/** JSON of GET /export-excel/api/audit (src/export/audit-admin.controller.ts). */
+export type AuditSource = 'web' | 'discord';
+
+export interface AuditEntry {
+  id: number;
+  at: string;
+  source: AuditSource;
+  action: string;
+  actor: string | null;
+  ip: string | null;
+  detail: string | null;
+}
+
+export interface AuditPage {
+  /** Newest first. */
+  entries: AuditEntry[];
+  /** Matching entries on all pages (with `after`: how many are newer). */
+  total: number;
+  page: number;
+  pageSize: number;
+  actions: { value: string; label: string }[];
+}
+
+/** "all", or "external" = everything not from the office network. */
+export type AuditScope = 'all' | 'external';
+
+export interface AuditFilter {
+  scope: AuditScope;
+  action?: string;
+  source?: AuditSource;
+  search?: string;
+}

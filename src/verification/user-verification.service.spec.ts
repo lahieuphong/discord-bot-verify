@@ -1,3 +1,4 @@
+import type { AuditService } from '../audit/audit.service.js';
 import { ConfigService } from '@nestjs/config';
 import {
   MessageFlags,
@@ -46,8 +47,13 @@ describe('UserVerificationService', () => {
       },
     } as unknown as PrismaService;
 
+    const auditRecord = vi.fn();
+
     return {
-      service: new UserVerificationService(configService, prisma),
+      service: new UserVerificationService(configService, prisma, {
+        record: auditRecord,
+      } as unknown as AuditService),
+      auditRecord,
       userFindUnique,
       userUpsert,
       promptUpsert,
@@ -624,7 +630,7 @@ describe('UserVerificationService', () => {
   });
 
   it('normalizes and saves a private-DM submission with the user record', async () => {
-    const { service, userUpsert } = createService();
+    const { service, userUpsert, auditRecord } = createService();
     const addRole = vi.fn();
     const role = {
       id: 'member-role-id',
@@ -704,5 +710,15 @@ describe('UserVerificationService', () => {
       },
     });
     expect(addRole).toHaveBeenCalledWith(role, 'User information submitted');
+    // Nhật ký: who and what, never the phone number or CCCD.
+    expect(auditRecord).toHaveBeenCalledWith({
+      source: 'discord',
+      action: 'verification_submitted',
+      actor: 'user-id',
+      detail: expect.stringContaining('Được cấp vai trò') as unknown,
+    });
+    expect(JSON.stringify(auditRecord.mock.calls)).not.toMatch(
+      /0912345678|037153000257/,
+    );
   });
 });

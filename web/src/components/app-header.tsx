@@ -1,5 +1,6 @@
 import {
   BotMessageSquareIcon,
+  HistoryIcon,
   LogOutIcon,
   ShieldCheckIcon,
   SparklesIcon,
@@ -25,12 +26,13 @@ const STATUS: Record<
 
 const STATUS_REFRESH_MS = 30_000;
 
-export type Tab = 'members' | 'gemini' | 'assistant';
+export type Tab = 'members' | 'gemini' | 'assistant' | 'audit';
 
 const TABS: { tab: Tab; label: string; icon: LucideIcon }[] = [
   { tab: 'members', label: 'Thành viên', icon: UsersIcon },
   { tab: 'gemini', label: 'Gemini API', icon: SparklesIcon },
   { tab: 'assistant', label: 'Trợ lý AI', icon: BotMessageSquareIcon },
+  { tab: 'audit', label: 'Nhật ký', icon: HistoryIcon },
 ];
 
 /** Same layout as the other bots' admin pages: brand | tabs | account. */

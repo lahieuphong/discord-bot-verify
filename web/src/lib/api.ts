@@ -1,5 +1,7 @@
 import type {
   AnswerContext,
+  AuditFilter,
+  AuditPage,
   AssistantOverview,
   AssistantTestAnswer,
   AssistantTokenCounts,
@@ -72,6 +74,28 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify({ apiKey }),
     }),
+  /**
+   * One page of the audit log, or with `after` (the newest id the page
+   * knows) only what is newer, for live updates.
+   */
+  audit: (
+    filter: AuditFilter,
+    at: { page: number; pageSize: number } | { after: number },
+  ) => {
+    const params = new URLSearchParams();
+    if ('after' in at) {
+      params.set('after', String(at.after));
+    } else {
+      params.set('page', String(at.page));
+      params.set('pageSize', String(at.pageSize));
+    }
+    if (filter.scope === 'external') params.set('scope', 'external');
+    if (filter.action) params.set('action', filter.action);
+    if (filter.source) params.set('source', filter.source);
+    if (filter.search) params.set('search', filter.search);
+    const query = params.toString();
+    return request<AuditPage>(`/api/audit${query ? `?${query}` : ''}`);
+  },
   assistant: () => request<AssistantOverview>('/api/assistant'),
   assistantSource: (id: string) =>
     request<{ id: string; content: string }>(

@@ -1,3 +1,4 @@
+import type { AuditService } from '../audit/audit.service.js';
 import { firstValueFrom, take, toArray } from 'rxjs';
 import { LiveUpdatesService } from '../live/live-updates.service.js';
 import {
@@ -35,20 +36,46 @@ function createController(discordConnected = true) {
   const workbook = Buffer.from('xlsx-data');
   const createUsersWorkbook = vi.fn().mockResolvedValue(workbook);
   const liveUpdates = new LiveUpdatesService();
+  const auditRecord = vi.fn();
   const controller = new ExcelExportController(
     { createUsersWorkbook } as unknown as ExcelExportService,
     {
       getOverview: vi.fn().mockResolvedValue(overview(discordConnected)),
     } as unknown as MemberOverviewService,
-    { isEnabled: () => true } as unknown as ExportAuthService,
+    {
+      isEnabled: () => true,
+      verifySessionToken: () => 'admin',
+    } as unknown as ExportAuthService,
     liveUpdates,
+    { record: auditRecord } as unknown as AuditService,
   );
   const request = { headers: {}, socket: { remoteAddress: '127.0.0.1' } };
 
-  return { controller, createUsersWorkbook, workbook, request, liveUpdates };
+  return {
+    controller,
+    createUsersWorkbook,
+    workbook,
+    request,
+    liveUpdates,
+    auditRecord,
+  };
 }
 
 describe('ExcelExportController', () => {
+  it('writes each download to the audit log', async () => {
+    const { controller, request, auditRecord } = createController();
+
+    await controller.exportUsers(request as never);
+
+    expect(auditRecord).toHaveBeenCalledWith({
+      source: 'web',
+      action: 'excel_download',
+      actor: 'admin',
+      ip: '127.0.0.1',
+      detail: '1 thành viên',
+    });
+  });
+
   it('returns the workbook as a downloadable XLSX attachment with the members sheet', async () => {
     const { controller, createUsersWorkbook, workbook, request } =
       createController();

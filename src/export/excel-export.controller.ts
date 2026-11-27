@@ -19,11 +19,13 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { interval, map, merge, of, type Observable } from 'rxjs';
+import { AuditService } from '../audit/audit.service.js';
 import { LiveUpdatesService } from '../live/live-updates.service.js';
 import { ExcelExportService } from './excel-export.service.js';
 import {
   clearedSessionCookie,
   ExportAuthService,
+  FAILED_ATTEMPT_WINDOW_MS,
   getClientIp,
   readCookie,
   SESSION_COOKIE,
@@ -70,12 +72,15 @@ function loginField(body: unknown, key: 'username' | 'password'): string {
 @Controller('export-excel')
 export class ExcelExportController {
   private readonly logger = new Logger(ExcelExportController.name);
+  /** Last time a blocked login was written to the audit log, per IP. */
+  private readonly blockedAudited = new Map<string, number>();
 
   constructor(
     private readonly excelExportService: ExcelExportService,
     private readonly memberOverviewService: MemberOverviewService,
     private readonly exportAuthService: ExportAuthService,
     private readonly liveUpdatesService: LiveUpdatesService,
+    private readonly auditService: AuditService,
   ) {}
 
   /** The React app; it shows the login form or the member list. */
@@ -100,11 +105,33 @@ export class ExcelExportController {
 
     const username = loginField(body, 'username');
     const password = loginField(body, 'password');
-    const result = this.exportAuthService.login(
-      getClientIp(request),
-      username,
-      password,
-    );
+    const ip = getClientIp(request);
+    const result = this.exportAuthService.login(ip, username, password);
+    // While an IP is blocked, one "blocked" entry per window is enough: a
+    // brute-force run must not fill the log.
+    const now = Date.now();
+    const lastBlocked = this.blockedAudited.get(ip);
+    if (
+      result !== 'blocked' ||
+      lastBlocked === undefined ||
+      now - lastBlocked >= FAILED_ATTEMPT_WINDOW_MS
+    ) {
+      if (result === 'blocked') this.blockedAudited.set(ip, now);
+      this.auditService.record({
+        source: 'web',
+        action:
+          result === 'ok'
+            ? 'login'
+            : result === 'blocked'
+              ? 'login_blocked'
+              : 'login_failed',
+        // A password typed into the username box is never logged.
+        actor: this.exportAuthService.isPassword(username)
+          ? '[đã ẩn]'
+          : username,
+        ip,
+      });
+    }
 
     if (result === 'blocked') {
       throw new HttpException(
@@ -126,7 +153,21 @@ export class ExcelExportController {
 
   @Post('api/logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  logout(@Res({ passthrough: true }) response: Response): void {
+  logout(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): void {
+    const username = this.exportAuthService.verifySessionToken(
+      readCookie(request, SESSION_COOKIE),
+    );
+    if (username) {
+      this.auditService.record({
+        source: 'web',
+        action: 'logout',
+        actor: username,
+        ip: getClientIp(request),
+      });
+    }
     response.setHeader('Set-Cookie', clearedSessionCookie());
   }
 
@@ -177,6 +218,15 @@ export class ExcelExportController {
     );
 
     this.logger.log(`Users Excel downloaded from ${getClientIp(request)}`);
+    this.auditService.record({
+      source: 'web',
+      action: 'excel_download',
+      actor: this.exportAuthService.verifySessionToken(
+        readCookie(request, SESSION_COOKIE),
+      ),
+      ip: getClientIp(request),
+      detail: `${overview.counts.total} thành viên`,
+    });
 
     return new StreamableFile(workbook, {
       type: XLSX_CONTENT_TYPE,

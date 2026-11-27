@@ -64,3 +64,10 @@ export type VerificationPrompt = Prisma.VerificationPromptModel
  * the Gemini tab of the admin page. The question text is never stored.
  */
 export type GeminiRequest = Prisma.GeminiRequestModel
+/**
+ * Model AdminAuditLog
+ * Who did what on the admin page (/export-excel) and which verification
+ * events happened in Discord, for the "Nhật ký" tab. Kept 180 days. Never
+ * holds phone numbers, CCCDs or Gemini keys.
+ */
+export type AdminAuditLog = Prisma.AdminAuditLogModel

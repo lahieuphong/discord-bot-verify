@@ -1,3 +1,4 @@
+import type { AdminAuditService } from './admin-audit.service.js';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { Request } from 'express';
 import { describe, expect, it, vi } from 'vitest';
@@ -39,6 +40,7 @@ function createController() {
   const controller = new AssistantAdminController(
     geminiService as unknown as GeminiService,
     auth as unknown as ExportAuthService,
+    { record: vi.fn() } as unknown as AdminAuditService,
   );
 
   return { controller, geminiService };

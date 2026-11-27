@@ -35,6 +35,7 @@ import {
   type AnswerContext,
   type GeminiAnswer,
 } from '../gemini/gemini.service.js';
+import { AdminAuditService } from './admin-audit.service.js';
 import {
   ExportAuthService,
   readCookie,
@@ -112,6 +113,7 @@ export class AssistantAdminController {
   constructor(
     private readonly geminiService: GeminiService,
     private readonly exportAuthService: ExportAuthService,
+    private readonly adminAudit: AdminAuditService,
   ) {}
 
   @Get()
@@ -195,6 +197,7 @@ export class AssistantAdminController {
     const username = this.exportAuthService.verifySessionToken(
       readCookie(request, SESSION_COOKIE),
     );
+    this.adminAudit.record(request, 'assistant_ask', question);
     const startedAt = Date.now();
     const answer = await this.geminiService.ask(question, {
       source: 'admin',

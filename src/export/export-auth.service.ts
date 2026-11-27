@@ -152,6 +152,15 @@ export class ExportAuthService {
     return username === credentials.username ? username : null;
   }
 
+  /**
+   * True when `value` is the configured password, e.g. pasted into the
+   * username box: the audit log then must not keep it as the actor.
+   */
+  isPassword(value: string): boolean {
+    const credentials = this.credentials();
+    return credentials !== null && safeEqual(value, credentials.password);
+  }
+
   private credentials(): { username: string; password: string } | null {
     const username = this.configService.get('EXPORT_USERNAME', {
       infer: true,

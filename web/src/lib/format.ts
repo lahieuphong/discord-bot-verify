@@ -31,6 +31,25 @@ export function formatDateTime(value: string | null): string {
   return value ? dateTimeFormat.format(new Date(value)) : '—';
 }
 
+const stampFormat = new Intl.DateTimeFormat('vi-VN', {
+  timeZone: TIME_ZONE,
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+});
+
+/** "27/11/2026 · 13:05:42" in Vietnam time. */
+export function formatTimestamp(value: string): string {
+  const part = Object.fromEntries(
+    stampFormat.formatToParts(new Date(value)).map((p) => [p.type, p.value]),
+  );
+  return `${part.day}/${part.month}/${part.year} · ${part.hour}:${part.minute}:${part.second}`;
+}
+
 /** "21:05:42" in Vietnam time. */
 export function formatClock(date: Date): string {
   return timeFormat.format(date);

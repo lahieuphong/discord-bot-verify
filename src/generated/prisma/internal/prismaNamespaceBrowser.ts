@@ -54,7 +54,8 @@ export const ModelName = {
   EmailVerification: 'EmailVerification',
   User: 'User',
   VerificationPrompt: 'VerificationPrompt',
-  GeminiRequest: 'GeminiRequest'
+  GeminiRequest: 'GeminiRequest',
+  AdminAuditLog: 'AdminAuditLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -143,6 +144,19 @@ export const GeminiRequestScalarFieldEnum = {
 } as const
 
 export type GeminiRequestScalarFieldEnum = (typeof GeminiRequestScalarFieldEnum)[keyof typeof GeminiRequestScalarFieldEnum]
+
+
+export const AdminAuditLogScalarFieldEnum = {
+  id: 'id',
+  at: 'at',
+  source: 'source',
+  action: 'action',
+  actor: 'actor',
+  ip: 'ip',
+  detail: 'detail'
+} as const
+
+export type AdminAuditLogScalarFieldEnum = (typeof AdminAuditLogScalarFieldEnum)[keyof typeof AdminAuditLogScalarFieldEnum]
 
 
 export const SortOrder = {

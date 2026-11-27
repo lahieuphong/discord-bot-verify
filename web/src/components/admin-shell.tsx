@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AppHeader, type Tab } from '@/components/app-header';
 import { AssistantPage } from '@/components/assistant/assistant-page';
+import { AuditPage } from '@/components/audit-page';
 import { Dashboard } from '@/components/dashboard';
 import { GeminiPage } from '@/components/gemini/gemini-page';
 import { Toaster } from '@/components/ui/sonner';
-import { api } from '@/lib/api';
+import { api, ApiError } from '@/lib/api';
 import { useLiveUpdates } from '@/lib/live';
 
 const TAB_HASH: Record<Tab, string> = {
   members: '#/thanh-vien',
   gemini: '#/gemini',
   assistant: '#/tro-ly-ai',
+  audit: '#/nhat-ky',
 };
 
 function tabFromHash(): Tab {
@@ -64,6 +66,19 @@ export function AdminShell({
     }));
   }, []);
 
+  /** The audit page shows the message; 401 goes back to the login form. */
+  const auditError = useCallback(
+    (reason: unknown): string => {
+      if (reason instanceof ApiError && reason.status === 401) {
+        onSessionEnded(reason.message);
+      }
+      return reason instanceof Error
+        ? reason.message
+        : 'Không kết nối được máy chủ.';
+    },
+    [onSessionEnded],
+  );
+
   const liveMode = useLiveUpdates({
     onChange,
     onUnauthorized: onSessionEnded,
@@ -98,6 +113,11 @@ export function AdminShell({
         />
       )}
       {tab === 'assistant' && <AssistantPage onSessionEnded={onSessionEnded} />}
+      {tab === 'audit' && (
+        <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+          <AuditPage onError={auditError} />
+        </main>
+      )}
     </div>
   );
 }

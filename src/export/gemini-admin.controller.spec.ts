@@ -1,3 +1,4 @@
+import type { AdminAuditService } from './admin-audit.service.js';
 import { BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
 import { describe, expect, it, vi } from 'vitest';
@@ -27,12 +28,14 @@ function createController({
     isEnabled: vi.fn(() => trackingEnabled),
     getKeyUsage: vi.fn(() => Promise.resolve({ today: { requests: 3 } })),
   };
+  const audit = vi.fn();
   const controller = new GeminiAdminController(
     geminiService as unknown as GeminiService,
     usageService as unknown as GeminiUsageService,
+    { record: audit } as unknown as AdminAuditService,
   );
 
-  return { controller, geminiService, usageService };
+  return { controller, geminiService, usageService, audit };
 }
 
 describe('GeminiAdminController', () => {
@@ -95,5 +98,23 @@ describe('GeminiAdminController', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
     await controller.replaceKey({ apiKey: 'AIzaNew' }, request);
     expect(geminiService.replaceKey).toHaveBeenCalledWith('AIzaNew');
+  });
+
+  it('logs key changes without the key', async () => {
+    const { controller, geminiService, audit } = createController();
+
+    await controller.replaceKey({ apiKey: 'AIzaSecretKey' }, request);
+    geminiService.replaceKey.mockRejectedValueOnce(
+      new BadRequestException('Google không chấp nhận key này'),
+    );
+    await expect(
+      controller.replaceKey({ apiKey: 'AIzaOtherSecret' }, request),
+    ).rejects.toThrow();
+
+    expect(audit.mock.calls.map((call) => call[1])).toEqual([
+      'gemini_key_replace',
+      'gemini_key_rejected',
+    ]);
+    expect(JSON.stringify(audit.mock.calls)).not.toMatch(/Secret/);
   });
 });
