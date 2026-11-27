@@ -7,9 +7,15 @@ export class QuestionController {
   constructor(private readonly geminiService: GeminiService) {}
 
   @Post('question')
-  async question(@Body() body: unknown): Promise<GeminiAnswer> {
+  /** The public answer: which knowledge was used stays on the admin page. */
+  async question(
+    @Body() body: unknown,
+  ): Promise<Omit<GeminiAnswer, 'context'>> {
     const question = this.readQuestion(body);
-    return this.geminiService.ask(question, { source: 'http' });
+    const { answer, model, usage } = await this.geminiService.ask(question, {
+      source: 'http',
+    });
+    return { answer, model, usage };
   }
 
   private readQuestion(body: unknown): string {

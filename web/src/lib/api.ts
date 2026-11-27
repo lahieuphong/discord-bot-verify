@@ -1,4 +1,5 @@
 import type {
+  AnswerContext,
   AssistantOverview,
   AssistantTestAnswer,
   AssistantTokenCounts,
@@ -78,6 +79,11 @@ export const api = {
     ),
   assistantTokens: () =>
     request<AssistantTokenCounts>('/api/assistant/tokens', { method: 'POST' }),
+  previewAssistant: (question: string) =>
+    request<AnswerContext>('/api/assistant/preview', {
+      method: 'POST',
+      body: JSON.stringify({ question }),
+    }),
   askAssistant: (question: string) =>
     request<AssistantTestAnswer>('/api/assistant/ask', {
       method: 'POST',

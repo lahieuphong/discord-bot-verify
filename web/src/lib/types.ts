@@ -157,6 +157,10 @@ export interface AssistantOverview {
   persona: string;
   guidance: string;
   systemCharacters: number;
+  knowledgeMode: 'retrieval' | 'full';
+  contextBudget: number;
+  passageCount: number;
+  retrievalNote: string;
   gameKnowledgeGeneratedAt: string;
   sources: AssistantSource[];
 }
@@ -164,6 +168,19 @@ export interface AssistantOverview {
 export interface AssistantTokenCounts {
   total: number;
   sections: Record<string, number>;
+}
+
+/** Which knowledge a question is sent with. */
+export interface AnswerContext {
+  mode: 'retrieval' | 'full';
+  characters: number;
+  passages: {
+    title: string;
+    source: string;
+    score: number;
+    characters: number;
+    core: boolean;
+  }[];
 }
 
 export interface AssistantTestAnswer {
@@ -174,6 +191,7 @@ export interface AssistantTestAnswer {
     outputTokens: number | null;
     totalTokens: number | null;
   };
+  context: AnswerContext;
   durationMs: number;
   discordMessages: number;
 }

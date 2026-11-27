@@ -126,8 +126,10 @@ export function SourcesCard({
       <CardHeader>
         <CardTitle className="text-base">Nguồn kiến thức</CardTitle>
         <CardDescription>
-          Toàn bộ các nguồn được gửi kèm mỗi câu hỏi. Phần lấy từ game được tạo
-          lúc {formatDateTime(overview.gameKnowledgeGeneratedAt)} bằng lệnh{' '}
+          Kiến thức bot dùng để trả lời, cắt thành{' '}
+          {formatNumber(overview.passageCount)} đoạn để tìm. Phần lấy từ game
+          được tạo lúc {formatDateTime(overview.gameKnowledgeGeneratedAt)} bằng
+          lệnh{' '}
           <code className="rounded bg-muted px-1">npm run knowledge:sync</code>{' '}
           (đọc thư mục TuTienHTML_r3).
         </CardDescription>
@@ -152,10 +154,11 @@ export function SourcesCard({
       <CardContent className="flex flex-col gap-3">
         {tokens && (
           <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-            Mỗi câu hỏi gửi kèm khoảng{' '}
-            <b className="tabular-nums">{formatNumber(tokens.total)}</b> token
-            chỉ dẫn. Con số này tính vào hạn mức token mỗi phút của key, nên
-            nguồn càng dài thì mỗi phút trả lời được càng ít câu.
+            Toàn bộ các nguồn dài khoảng{' '}
+            <b className="tabular-nums">{formatNumber(tokens.total)}</b> token.{' '}
+            {overview.knowledgeMode === 'retrieval'
+              ? `Mỗi câu hỏi chỉ gửi phần liên quan (tối đa ${formatNumber(overview.contextBudget)} ký tự), nên tốn ít hơn nhiều; con số thật của từng câu hiện ở ô Hỏi thử và tab Gemini API.`
+              : 'Bot đang ở chế độ gửi toàn bộ (GEMINI_KNOWLEDGE_MODE=full): mỗi câu hỏi tốn chừng ấy token đầu vào.'}
           </p>
         )}
 

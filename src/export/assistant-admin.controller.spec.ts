@@ -18,6 +18,7 @@ const request = {
 function createController() {
   const geminiService = {
     keyInfo: vi.fn(() => ({ configured: true, model: 'gemini-x' })),
+    knowledgeModeInUse: vi.fn(() => 'retrieval'),
     countTokens: vi.fn((texts: Record<string, string>) =>
       Promise.resolve(
         Object.fromEntries(
@@ -30,6 +31,7 @@ function createController() {
         answer: 'x'.repeat(4000),
         model: 'gemini-x',
         usage: { inputTokens: 1, outputTokens: 2, totalTokens: 3 },
+        context: { mode: 'retrieval', characters: 10, passages: [] },
       }),
     ),
   };
@@ -58,6 +60,22 @@ describe('AssistantAdminController', () => {
       KNOWLEDGE_SECTIONS.map((s) => s.id),
     );
     expect(JSON.stringify(overview).length).toBeLessThan(10_000);
+  });
+
+  it('previews the passages a question would send, without Gemini', () => {
+    const { controller, geminiService } = createController();
+
+    const preview = controller.preview({ question: 'Động phủ mở khi nào?' });
+
+    expect(preview.mode).toBe('retrieval');
+    expect(preview.passages.some((p) => p.core)).toBe(true);
+    expect(preview.passages.some((p) => p.title.endsWith('Động phủ'))).toBe(
+      true,
+    );
+    expect(geminiService.ask).not.toHaveBeenCalled();
+    expect(() => controller.preview({ question: ' ' })).toThrow(
+      BadRequestException,
+    );
   });
 
   it('returns one source on demand', () => {

@@ -16,6 +16,11 @@ export interface EnvironmentVariables {
   GEMINI_LIMIT_RPD: number | null;
   GEMINI_LIMIT_RPM: number | null;
   GEMINI_LIMIT_TPM: number | null;
+  /**
+   * `retrieval` (default): each /question sends only the knowledge passages
+   * relevant to it. `full`: every source (~140k tokens per question).
+   */
+  GEMINI_KNOWLEDGE_MODE: 'retrieval' | 'full';
   VERIFICATION_CHANNEL_ID?: string;
   VERIFIED_ROLE_ID?: string;
   VERIFIED_ROLE_NAME: string;
@@ -151,6 +156,17 @@ function optionalLimit(
   return value === 0 ? null : value;
 }
 
+function knowledgeMode(
+  config: Record<string, unknown>,
+): EnvironmentVariables['GEMINI_KNOWLEDGE_MODE'] {
+  const value = optionalString(config, 'GEMINI_KNOWLEDGE_MODE')?.toLowerCase();
+
+  if (value === undefined || value === 'retrieval') return 'retrieval';
+  if (value === 'full') return 'full';
+
+  throw new Error('GEMINI_KNOWLEDGE_MODE must be "retrieval" or "full"');
+}
+
 function booleanValue(
   config: Record<string, unknown>,
   key: string,
@@ -205,6 +221,7 @@ export function validateEnvironment(
     GEMINI_LIMIT_RPD: optionalLimit(config, 'GEMINI_LIMIT_RPD'),
     GEMINI_LIMIT_RPM: optionalLimit(config, 'GEMINI_LIMIT_RPM'),
     GEMINI_LIMIT_TPM: optionalLimit(config, 'GEMINI_LIMIT_TPM'),
+    GEMINI_KNOWLEDGE_MODE: knowledgeMode(config),
     VERIFICATION_CHANNEL_ID: optionalString(config, 'VERIFICATION_CHANNEL_ID'),
     VERIFIED_ROLE_ID: optionalString(config, 'VERIFIED_ROLE_ID'),
     VERIFIED_ROLE_NAME:

@@ -12,8 +12,11 @@ import type { EnvironmentVariables } from '../config/environment.js';
 import { updateEnvFile } from '../config/env-file.js';
 import { LiveUpdatesService } from '../live/live-updates.service.js';
 import {
+  instructionFor,
   MAX_OUTPUT_TOKENS,
-  SYSTEM_INSTRUCTION,
+  TRUNCATED_NOTE,
+  type KnowledgeMode,
+  type QuestionInstruction,
 } from './knowledge/knowledge.js';
 import {
   describeGeminiError,
@@ -26,6 +29,20 @@ import {
   type GeminiSource,
 } from './gemini-usage.service.js';
 
+export interface AnswerContext {
+  mode: KnowledgeMode;
+  /** Characters of knowledge sent with the question. */
+  characters: number;
+  /** Passages sent (retrieval mode): title, source and relevance score. */
+  passages: {
+    title: string;
+    source: string;
+    score: number;
+    characters: number;
+    core: boolean;
+  }[];
+}
+
 export interface GeminiAnswer {
   answer: string;
   model: string;
@@ -34,6 +51,8 @@ export interface GeminiAnswer {
     outputTokens: number | null;
     totalTokens: number | null;
   };
+  /** Which knowledge was sent with this question. */
+  context: AnswerContext;
 }
 
 export interface GeminiKeyInfo {
@@ -59,6 +78,29 @@ export type GeminiKeyCheck =
 /** Gemini API keys: one line of letters, digits, "-", "_" and ".". */
 const API_KEY_PATTERN = /^[A-Za-z0-9_.-]{20,256}$/;
 
+/** What knowledge a question was sent with, for the admin page. */
+export function describeContext(prepared: QuestionInstruction): AnswerContext {
+  if (!prepared.selection) {
+    return {
+      mode: prepared.mode,
+      characters: prepared.instruction.length,
+      passages: [],
+    };
+  }
+
+  return {
+    mode: prepared.mode,
+    characters: prepared.selection.characters,
+    passages: prepared.selection.chunks.map(({ chunk, score }) => ({
+      title: chunk.title,
+      source: chunk.sectionTitle,
+      score: Math.round(score * 10) / 10,
+      characters: chunk.text.length,
+      core: chunk.core,
+    })),
+  };
+}
+
 export function keyFingerprint(apiKey: string): string {
   return createHash('sha256').update(apiKey, 'utf8').digest('hex').slice(0, 12);
 }
@@ -73,6 +115,7 @@ export function maskKey(apiKey: string): string {
 export class GeminiService {
   private readonly logger = new Logger(GeminiService.name);
   private readonly model: string;
+  private readonly knowledgeMode: KnowledgeMode;
   /** The .env next to the running app (NSSM/compose start it in the app folder). */
   private readonly envFilePath = resolve(process.cwd(), '.env');
   private apiKey: string | null;
@@ -89,6 +132,9 @@ export class GeminiService {
     this.apiKey =
       this.configService.get('GEMINI_API_KEY', { infer: true }) ?? null;
     this.model = this.configService.get('GEMINI_MODEL', { infer: true });
+    this.knowledgeMode = this.configService.get('GEMINI_KNOWLEDGE_MODE', {
+      infer: true,
+    });
     this.client = this.apiKey ? new GoogleGenAI({ apiKey: this.apiKey }) : null;
     this.limits = {
       rpd: this.configService.get('GEMINI_LIMIT_RPD', { infer: true }),
@@ -111,6 +157,7 @@ export class GeminiService {
     }
 
     const startedAt = Date.now();
+    const prepared = instructionFor(question, this.knowledgeMode);
     const base = {
       keyFingerprint: keyFingerprint(apiKey),
       model: this.model,
@@ -124,7 +171,7 @@ export class GeminiService {
         contents: question,
         config: {
           maxOutputTokens: MAX_OUTPUT_TOKENS,
-          systemInstruction: SYSTEM_INSTRUCTION,
+          systemInstruction: prepared.instruction,
         },
       });
       const usage = {
@@ -132,7 +179,9 @@ export class GeminiService {
         outputTokens: response.usageMetadata?.candidatesTokenCount ?? null,
         totalTokens: response.usageMetadata?.totalTokenCount ?? null,
       };
-      const answer = response.text?.trim();
+      const text = response.text?.trim();
+      const truncated = response.candidates?.[0]?.finishReason === 'MAX_TOKENS';
+      const answer = text && truncated ? `${text}\n\n${TRUNCATED_NOTE}` : text;
 
       if (!answer) {
         void this.usageService.record({
@@ -154,6 +203,7 @@ export class GeminiService {
         answer,
         model: response.modelVersion ?? this.model,
         usage,
+        context: describeContext(prepared),
       };
     } catch (error) {
       const info = describeGeminiError(error);
@@ -171,6 +221,10 @@ export class GeminiService {
 
       throw new ServiceUnavailableException(this.userMessage(info));
     }
+  }
+
+  knowledgeModeInUse(): KnowledgeMode {
+    return this.knowledgeMode;
   }
 
   keyInfo(): GeminiKeyInfo {

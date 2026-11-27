@@ -8,6 +8,11 @@ import type { EnvironmentVariables } from '../config/environment.js';
 import type { LiveUpdatesService } from '../live/live-updates.service.js';
 import type { GeminiUsageService } from './gemini-usage.service.js';
 import { GeminiService, keyFingerprint, maskKey } from './gemini.service.js';
+import {
+  MAX_OUTPUT_TOKENS,
+  SYSTEM_INSTRUCTION,
+  TRUNCATED_NOTE,
+} from './knowledge/knowledge.js';
 
 const genai = vi.hoisted(() => ({
   generateContent: vi.fn(),
@@ -35,13 +40,17 @@ vi.mock('../config/env-file.js', () => envFile);
 const OLD_KEY = 'AIzaOldKey0000000000000000000000000000';
 const NEW_KEY = 'AIzaNewKey1111111111111111111111111111';
 
-function createService(apiKey: string | null = OLD_KEY) {
+function createService(
+  apiKey: string | null = OLD_KEY,
+  knowledgeMode: 'retrieval' | 'full' = 'retrieval',
+) {
   const values: Partial<EnvironmentVariables> = {
     GEMINI_API_KEY: apiKey ?? undefined,
     GEMINI_MODEL: 'gemini-flash-latest',
     GEMINI_LIMIT_RPD: 250,
     GEMINI_LIMIT_RPM: null,
     GEMINI_LIMIT_TPM: null,
+    GEMINI_KNOWLEDGE_MODE: knowledgeMode,
   };
   const configService = {
     get: (key: keyof EnvironmentVariables) => values[key],
@@ -265,7 +274,52 @@ describe('GeminiService', () => {
       config: { systemInstruction: string; maxOutputTokens: number };
     };
     expect(request.config.systemInstruction).toContain('# Nhiệm vụ trong game');
-    expect(request.config.maxOutputTokens).toBe(1200);
+    expect(request.config.maxOutputTokens).toBe(MAX_OUTPUT_TOKENS);
+  });
+
+  it('sends only the relevant knowledge and says which', async () => {
+    const { service } = createService();
+    genai.generateContent.mockResolvedValue({ text: 'ok' });
+
+    const answer = await service.ask('Làm sao mở Động phủ?', {
+      source: 'discord',
+    });
+
+    const request = genai.generateContent.mock.calls[0]?.[0] as {
+      config: { systemInstruction: string };
+    };
+    expect(request.config.systemInstruction.length).toBeLessThan(
+      SYSTEM_INSTRUCTION.length / 5,
+    );
+    expect(answer.context.mode).toBe('retrieval');
+    expect(
+      answer.context.passages.some((p) => p.title.endsWith('Động phủ')),
+    ).toBe(true);
+  });
+
+  it('marks an answer cut off by the output budget', async () => {
+    const { service } = createService();
+    genai.generateContent.mockResolvedValue({
+      text: 'Một nửa câu',
+      candidates: [{ finishReason: 'MAX_TOKENS' }],
+    });
+
+    const answer = await service.ask('hi', { source: 'http' });
+
+    expect(answer.answer).toBe(`Một nửa câu\n\n${TRUNCATED_NOTE}`);
+  });
+
+  it('sends everything in full mode', async () => {
+    const { service } = createService(OLD_KEY, 'full');
+    genai.generateContent.mockResolvedValue({ text: 'ok' });
+
+    const answer = await service.ask('hi', { source: 'http' });
+
+    const request = genai.generateContent.mock.calls[0]?.[0] as {
+      config: { systemInstruction: string };
+    };
+    expect(request.config.systemInstruction).toBe(SYSTEM_INSTRUCTION);
+    expect(answer.context).toMatchObject({ mode: 'full', passages: [] });
   });
 
   it('reports a missing key on check', async () => {

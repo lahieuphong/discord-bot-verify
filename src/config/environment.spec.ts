@@ -23,6 +23,7 @@ describe('validateEnvironment', () => {
       GEMINI_LIMIT_RPD: null,
       GEMINI_LIMIT_RPM: null,
       GEMINI_LIMIT_TPM: null,
+      GEMINI_KNOWLEDGE_MODE: 'retrieval',
       VERIFICATION_CHANNEL_ID: undefined,
       VERIFIED_ROLE_ID: undefined,
       VERIFIED_ROLE_NAME: 'member',
@@ -134,6 +135,15 @@ describe('export login settings', () => {
       GEMINI_LIMIT_RPM: null,
       GEMINI_LIMIT_TPM: null,
     });
+  });
+
+  it('reads the knowledge mode', () => {
+    expect(
+      validateEnvironment({ ...base, GEMINI_KNOWLEDGE_MODE: 'FULL' }),
+    ).toMatchObject({ GEMINI_KNOWLEDGE_MODE: 'full' });
+    expect(() =>
+      validateEnvironment({ ...base, GEMINI_KNOWLEDGE_MODE: 'all' }),
+    ).toThrow(/GEMINI_KNOWLEDGE_MODE/);
   });
 
   it.each(['-1', '1.5', 'many'])('rejects a Gemini limit of %s', (value) => {

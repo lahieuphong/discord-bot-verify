@@ -15,6 +15,7 @@ describe('QuestionController', () => {
       outputTokens: 2,
       totalTokens: 9,
     },
+    context: { mode: 'retrieval', characters: 0, passages: [] },
   };
 
   beforeEach(async () => {
@@ -36,7 +37,11 @@ describe('QuestionController', () => {
   it('sends a trimmed question to Gemini', async () => {
     await expect(
       controller.question({ question: '  What is the capital of France?  ' }),
-    ).resolves.toEqual(answer);
+    ).resolves.toEqual({
+      answer: answer.answer,
+      model: answer.model,
+      usage: answer.usage,
+    });
     expect(ask).toHaveBeenCalledWith('What is the capital of France?', {
       source: 'http',
     });

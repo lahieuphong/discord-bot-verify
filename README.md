@@ -167,9 +167,9 @@ brings fresh quota if it comes from another project.
 
 ### What /question knows (game knowledge)
 
-Every `/question` is sent to Gemini with one system instruction
-(`src/gemini/knowledge/knowledge.ts`): the assistant's role sentence, answering
-rules, and these knowledge sources:
+Every `/question` is sent to Gemini with a system instruction built in
+`src/gemini/knowledge/knowledge.ts`: the assistant's role sentence, answering
+rules, and knowledge from these sources:
 
 | Source | Where it comes from |
 | --- | --- |
@@ -189,10 +189,29 @@ The game folder must have its dependencies installed (`corepack pnpm install`);
 the script runs the game's own `tsx` to read its TypeScript data and never
 writes there. It warns about screens without a description and missing texts.
 
-The **Trợ lý AI** tab of `/export-excel` shows the flow of `/question`, the
-role and rules, every knowledge source (searchable, with token counts from
-Google's free countTokens) and a **Hỏi thử** box that asks Gemini exactly like
-`/question` (counted on the Gemini tab as source `admin`, not posted to Discord).
+**Only the relevant knowledge is sent** (`GEMINI_KNOWLEDGE_MODE=retrieval`,
+the default). All sources together are ~390k characters (~140k tokens), more
+than half of the free tier's 250k input tokens per minute. So
+`src/gemini/knowledge/retrieval.ts` cuts them into ~250 passages and ranks
+them for each question. The passages are wiki articles in ~2,000-character
+pieces, one per game screen and one per quest group. The ranking is BM25 over
+Vietnamese syllables and two-syllable phrases, with and without diacritics, so
+unaccented questions work too, plus a bonus when the question names a screen.
+It runs locally, with no API call. A question then sends the game overview
+(menu, unlock realms, reset times) and the best passages, up to 45,000
+characters: about 15–17k input tokens and ~10 s per answer, instead of ~140k
+tokens and ~40 s. Set `GEMINI_KNOWLEDGE_MODE=full` to send every source again.
+
+Answers may use up to 3,000 output tokens, because thinking models spend part
+of the output budget on hidden reasoning. With 1,200, answers were cut off
+mid-sentence. If an answer still hits the limit, a note says it was cut.
+
+The **Trợ lý AI** tab of `/export-excel` shows:
+
+- the flow of `/question`;
+- the role and rules;
+- every knowledge source: searchable, with token counts from Google's free countTokens;
+- a **Hỏi thử** box. **Xem bot sẽ gửi gì** lists the passages a question would send, for free. **Gửi câu hỏi** asks Gemini exactly like `/question`, shows the answer with the passages used, and counts on the Gemini tab as source `admin`. Nothing is posted to Discord.
 
 ## Run
 
@@ -249,6 +268,7 @@ npm run start:prod
 | `DISCORD_GUILD_ID` | No | Test server ID for immediate guild-scoped command registration. |
 | `GEMINI_API_KEY` | For `/question` | Server-side key from Google AI Studio. |
 | `GEMINI_MODEL` | No | Gemini model; defaults to `gemini-flash-latest`. |
+| `GEMINI_KNOWLEDGE_MODE` | No | `retrieval` (default): each question sends only the relevant knowledge. `full`: every source (~140k tokens per question). |
 | `GEMINI_LIMIT_RPD` / `_RPM` / `_TPM` | No | The key's requests per day, requests per minute and input tokens per minute from AI Studio, for the Gemini tab. Empty or `0` = unknown. |
 | `VERIFICATION_CHANNEL_ID` | For user verification | Channel that holds the verification panel and new-member prompts. |
 | `VERIFIED_ROLE_ID` | Recommended | Exact role to assign after successful verification. |

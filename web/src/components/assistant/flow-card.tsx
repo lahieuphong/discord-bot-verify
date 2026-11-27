@@ -48,16 +48,28 @@ export function FlowCard({
     {
       icon: ScrollTextIcon,
       tone: 'bg-amber-50 text-amber-700',
-      title: 'Bot ghép chỉ dẫn',
-      text: (
-        <>
-          Câu hỏi được gửi kèm vai trò của bot và toàn bộ{' '}
-          {overview.sources.length} nguồn kiến thức bên dưới (
-          {formatNumber(overview.systemCharacters)} ký tự
-          {systemTokens !== null && ` ≈ ${formatNumber(systemTokens)} token`}
-          ).
-        </>
-      ),
+      title:
+        overview.knowledgeMode === 'retrieval'
+          ? 'Bot chọn đoạn liên quan'
+          : 'Bot ghép chỉ dẫn',
+      text:
+        overview.knowledgeMode === 'retrieval' ? (
+          <>
+            Bot tìm trong {formatNumber(overview.passageCount)} đoạn của{' '}
+            {overview.sources.length} nguồn kiến thức (ngay trên máy chủ, không
+            tốn lượt) rồi chỉ gửi tổng quan game và các đoạn khớp nhất, tối đa{' '}
+            {formatNumber(overview.contextBudget)} ký tự thay vì{' '}
+            {formatNumber(overview.systemCharacters)}.
+          </>
+        ) : (
+          <>
+            Câu hỏi được gửi kèm vai trò của bot và toàn bộ{' '}
+            {overview.sources.length} nguồn kiến thức bên dưới (
+            {formatNumber(overview.systemCharacters)} ký tự
+            {systemTokens !== null && ` ≈ ${formatNumber(systemTokens)} token`}
+            ).
+          </>
+        ),
     },
     {
       icon: SparklesIcon,
@@ -65,9 +77,9 @@ export function FlowCard({
       title: 'Gemini trả lời',
       text: (
         <>
-          Model <b>{overview.model}</b> viết câu trả lời dài tối đa{' '}
-          {formatNumber(overview.maxOutputTokens)} token. Mỗi lượt được đếm ở
-          tab Gemini API.
+          Model <b>{overview.model}</b> suy nghĩ rồi viết câu trả lời, tổng cộng
+          tối đa {formatNumber(overview.maxOutputTokens)} token. Mỗi lượt được
+          đếm ở tab Gemini API.
         </>
       ),
     },
@@ -145,6 +157,11 @@ export function PersonaCard({ overview }: { overview: AssistantOverview }) {
         <blockquote className="rounded-lg border-l-4 border-zinc-300 bg-muted/50 px-4 py-3 text-muted-foreground">
           {overview.guidance}
         </blockquote>
+        {overview.knowledgeMode === 'retrieval' && (
+          <blockquote className="rounded-lg border-l-4 border-amber-300 bg-amber-50/60 px-4 py-3 text-muted-foreground">
+            {overview.retrievalNote}
+          </blockquote>
+        )}
       </CardContent>
     </Card>
   );

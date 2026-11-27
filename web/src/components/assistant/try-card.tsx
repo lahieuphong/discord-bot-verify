@@ -1,5 +1,6 @@
-import { Loader2Icon, SendIcon } from 'lucide-react';
+import { EyeIcon, Loader2Icon, SendIcon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,13 +11,75 @@ import {
 } from '@/components/ui/card';
 import { api, ApiError } from '@/lib/api';
 import { formatNumber } from '@/lib/gemini';
-import type { AssistantTestAnswer } from '@/lib/types';
+import type { AnswerContext, AssistantTestAnswer } from '@/lib/types';
 
 const EXAMPLES = [
   'Nhiệm vụ hằng ngày có những việc gì, nhận thưởng tối đa mấy lần?',
   'Làm sao để mở Động phủ và nó dùng để làm gì?',
-  'Nhiệm vụ chính số 11 yêu cầu gì?',
+  'lam sao vao Cau Ma',
 ];
+
+/** Passages listed before "Xem cả … đoạn còn lại". */
+const PASSAGES_SHOWN = 10;
+
+/** The knowledge passages a question is (or would be) sent with. */
+function PassageList({ context }: { context: AnswerContext }) {
+  const [showAll, setShowAll] = useState(false);
+
+  if (context.mode === 'full') {
+    return (
+      <p className="text-xs text-muted-foreground">
+        Chế độ gửi toàn bộ: kèm mọi nguồn kiến thức (
+        {formatNumber(context.characters)} ký tự).
+      </p>
+    );
+  }
+
+  const matched = context.passages.filter((p) => !p.core);
+  const shown = showAll ? matched : matched.slice(0, PASSAGES_SHOWN);
+
+  return (
+    <details className="rounded-lg border bg-muted/20 px-3 py-2 text-sm" open>
+      <summary className="cursor-pointer text-muted-foreground">
+        Gửi kèm {formatNumber(context.characters)} ký tự kiến thức:{' '}
+        {matched.length === 0
+          ? 'chỉ tổng quan game (không có đoạn nào khớp)'
+          : `tổng quan game và ${matched.length} đoạn khớp nhất`}
+      </summary>
+      {matched.length > 0 && (
+        <ol className="mt-2 flex flex-col gap-1">
+          {shown.map((passage, index) => (
+            <li
+              key={`${passage.title}-${index}`}
+              className="flex items-baseline gap-2 text-xs"
+            >
+              <span className="w-10 shrink-0 text-right font-medium text-foreground tabular-nums">
+                {passage.score.toFixed(1)}
+              </span>
+              <span className="min-w-0 flex-1 truncate" title={passage.title}>
+                {passage.title}
+              </span>
+              <Badge variant="muted" className="hidden sm:inline-flex">
+                {passage.source}
+              </Badge>
+            </li>
+          ))}
+        </ol>
+      )}
+      {matched.length > PASSAGES_SHOWN && (
+        <button
+          type="button"
+          className="mt-2 cursor-pointer text-xs text-sky-700 hover:underline"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll
+            ? 'Thu gọn'
+            : `Xem cả ${matched.length - PASSAGES_SHOWN} đoạn còn lại`}
+        </button>
+      )}
+    </details>
+  );
+}
 
 /** Ask Gemini exactly like a member would with /question. */
 export function TryCard({
@@ -29,18 +92,23 @@ export function TryCard({
   onError: (error: unknown) => void;
 }) {
   const [question, setQuestion] = useState('');
-  const [asking, setAsking] = useState(false);
+  const [busy, setBusy] = useState<'preview' | 'ask' | null>(null);
+  const [preview, setPreview] = useState<AnswerContext | null>(null);
   const [result, setResult] = useState<AssistantTestAnswer | null>(null);
   const [askError, setAskError] = useState<string | null>(null);
 
-  async function ask(event: FormEvent) {
-    event.preventDefault();
-    setAsking(true);
+  async function run(kind: 'preview' | 'ask') {
+    setBusy(kind);
     setAskError(null);
     setResult(null);
+    setPreview(null);
 
     try {
-      setResult(await api.askAssistant(question));
+      if (kind === 'preview') {
+        setPreview(await api.previewAssistant(question));
+      } else {
+        setResult(await api.askAssistant(question));
+      }
     } catch (error) {
       if (error instanceof ApiError && error.status !== 401) {
         setAskError(error.message);
@@ -48,22 +116,29 @@ export function TryCard({
         onError(error);
       }
     } finally {
-      setAsking(false);
+      setBusy(null);
     }
   }
+
+  function submit(event: FormEvent) {
+    event.preventDefault();
+    void run('ask');
+  }
+
+  const empty = question.trim().length === 0;
 
   return (
     <Card className="gap-3">
       <CardHeader>
         <CardTitle className="text-base">Hỏi thử</CardTitle>
         <CardDescription>
-          Gửi câu hỏi giống hệt lệnh /question để xem bot sẽ trả lời gì. Mỗi lần
-          hỏi thử tốn một lượt Gemini như câu hỏi thật (ghi ở tab Gemini API) và
-          không đăng lên Discord.
+          "Xem bot sẽ gửi gì" chỉ chạy bước tìm đoạn kiến thức: miễn phí, không
+          gọi Gemini. "Gửi câu hỏi" hỏi Gemini giống hệt lệnh /question, tốn một
+          lượt (ghi ở tab Gemini API) và không đăng lên Discord.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="flex flex-col gap-3" onSubmit={(e) => void ask(e)}>
+        <form className="flex flex-col gap-3" onSubmit={submit}>
           <textarea
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
@@ -85,17 +160,36 @@ export function TryCard({
               </button>
             ))}
           </div>
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs text-muted-foreground tabular-nums">
               {formatNumber(question.length)}/{formatNumber(maxLength)} ký tự
             </span>
-            <Button
-              type="submit"
-              disabled={disabled || asking || question.trim().length === 0}
-            >
-              {asking ? <Loader2Icon className="animate-spin" /> : <SendIcon />}
-              {asking ? 'Đang hỏi Gemini…' : 'Gửi câu hỏi'}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy !== null || empty}
+                onClick={() => void run('preview')}
+              >
+                {busy === 'preview' ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  <EyeIcon />
+                )}
+                Xem bot sẽ gửi gì
+              </Button>
+              <Button
+                type="submit"
+                disabled={disabled || busy !== null || empty}
+              >
+                {busy === 'ask' ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  <SendIcon />
+                )}
+                {busy === 'ask' ? 'Đang hỏi Gemini…' : 'Gửi câu hỏi'}
+              </Button>
+            </div>
           </div>
         </form>
 
@@ -103,6 +197,12 @@ export function TryCard({
           <p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {askError}
           </p>
+        )}
+
+        {preview && (
+          <div className="mt-4">
+            <PassageList context={preview} />
+          </div>
         )}
 
         {result && (
@@ -116,6 +216,7 @@ export function TryCard({
               {formatNumber(result.usage.outputTokens ?? 0)} token ra · Discord
               sẽ đăng thành {result.discordMessages} tin nhắn · {result.model}
             </p>
+            <PassageList context={result.context} />
           </div>
         )}
       </CardContent>

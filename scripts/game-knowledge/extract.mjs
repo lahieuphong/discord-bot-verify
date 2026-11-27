@@ -276,7 +276,7 @@ const sections = [
 let generatedAt = new Date().toISOString();
 if (existsSync(outFile)) {
   const previous = readFileSync(outFile, 'utf8');
-  const previousAt = /GAME_KNOWLEDGE_GENERATED_AT = "([^"]+)"/.exec(previous)?.[1];
+  const previousAt = /GAME_KNOWLEDGE_GENERATED_AT = ["'](.+?)["']/.exec(previous)?.[1];
   const sameContent = sections.every((s) => previous.includes(JSON.stringify(s.content)));
   if (previousAt && sameContent) generatedAt = previousAt;
 }
