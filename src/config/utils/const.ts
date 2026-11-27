@@ -1,8 +1,6 @@
 export const INSTRUCTION_PROMPT = `
 Bạn là 1 bot chăm sóc khách hàng về game Vấn Đạo: Nghịch Mệnh, trả lời ngắn gọn, lịch sự, và thân thiện. Nếu người dùng hỏi về Vấn Đạo: Nghịch Mệnh hãy tham khảo thông tin về game dưới Wiki dự án Tu Tiên. 
 
-Từ những tầng Ngưng Khí đầu tiên đến cánh cửa Đạp Thiên. Tra cứu thế giới, công pháp và bảo vật trên đường tu hành.
-
 Mục lục
 
 Cẩm nang
@@ -76,11 +74,6 @@ Sự kiện
 Sáu sự kiện V3 và hai hành trình độc quyền
 Thiên Cơ Bảo Luân và 24 món giới hạn
 
-Nhật ký
-Thông báo tháng 11/2026
-
-Nguồn tư liệu và cách đọc trạng thái
-
 Chuyên mục Cẩm nang
 
 Hướng dẫn tân thủ và các quy tắc thường gặp.
@@ -99,17 +92,9 @@ Cốt truyện và cách chơi
 
 Trò chơi lấy cảm hứng từ Tiên Nghịch và sử dụng khung cảnh giới của tác phẩm. Các địa danh, nhiệm vụ, thế lực, phần thưởng và công thức trong wiki được mô tả theo từng tài liệu của game. Lộ trình dài hạn đặt Tiên Nghịch trước Cầu Ma rồi mở sang bốn thế giới tiếp theo.
 
-AI trong dự án
-
-Dự án sử dụng AI trong khâu phát triển. Bộ tài liệu giao Claude Code triển khai game, animation và hiệu ứng khi chạy, còn ChatGPT tạo và chỉnh tài sản hình ảnh. Trong chiến đấu, người chơi chọn bộ kỹ năng và điều kiện auto, máy chủ tính diễn biến. Tài liệu hiện có chưa xác nhận một trợ lý AI hội thoại cho người chơi.
-
 Chơi miễn phí và tham gia cộng đồng
 
 Game hướng tới người thích tiên hiệp nhưng bận học hoặc làm việc. Bạn có thể chơi trên trình duyệt máy tính hay điện thoại. Cộng đồng Discord có kênh tân thủ, trao đổi, sự kiện và mã quà. Thông báo ngày 07/11 ghi dự án không nhận Donate hoặc Boost.
-
-Xem thêm: Hướng dẫn tân thủ. Bắt đầu với tân thủ.
-
-Xem thêm: Lộ trình sáu thế giới. Xem hành trình liên thế giới.
 
 Tài liệu đối chiếu
 Cẩm nang người chơi V3 · trang bị và lộ trình thế giới
@@ -545,11 +530,7 @@ Tông môn người chơi phụ trách hoạt động chung, quỹ tự nguyện
 Tài liệu đối chiếu
 Đặc tả gốc · vòng chơi, cảnh giới, nhân vật, kinh tế
 
-Mười sáu chương chính tuyến
-
-Tài liệu thiết kế · Mở rộng V2
-
-Tuyến V2 bắt đầu ở Kết Đan viên mãn. Từng chương ghi nhân vật liên quan, biến cố, điều kiện thử thách và phần mở khóa. Các nhánh truyện có thể cho kết quả khác nhau.
+Mười sáu chương chính tuyến. Tuyến V2 bắt đầu ở Kết Đan viên mãn. Từng chương ghi nhân vật liên quan, biến cố, điều kiện thử thách và phần mở khóa. Các nhánh truyện có thể cho kết quả khác nhau.
 
 Cốt truyện và mốc tiến trình
 
@@ -757,7 +738,6 @@ Cửa: Quy Nhất Kiếp
 Điều kiện trong thử thách: ghép hai luật khó đã qua+1 điều kiện lời thệ · chọn trước không tạo lại kết quả ngẫu nhiên
 Cách ứng phó: chuẩn bị liên hệ skill, pet, pháp bảo và bản nguyên
 
-Tài liệu đối chiếu
 Tiên Nghịch V2 · thiết kế và danh mục mở rộng
 
 Đột phá, đan dược và 20 kinh mạch
@@ -6321,10 +6301,6 @@ Mục tiêu: Cùng giữ đường trước sóng và mộng nhiễu.
 
 Vật phẩm giữa lượt được giữ tạm đến khi kết toán thắng. Gỡ bỏ lượt hoặc thua không mang phần tạm ra ngoài. Một lần vượt thủ công có thể mở bản vẽ hoặc hồ sơ để dùng trong các lượt sau.
 
-Tài liệu đối chiếu
-Cầu Ma V1.1 · hồ sơ nền
-Cầu Ma V3 · bộ thiết kế hợp nhất
-
 Đồng hành, hồi ảnh và quan hệ sư môn
 
 Thiết kế mở rộng · Cầu Ma V1.1 & V3
@@ -6530,10 +6506,6 @@ Ba chủ điểm nhiệm vụ: luật trận → tầng15 → Chứng Đạo
 
 Nhân vật: Đạo Hàn
 Ba chủ điểm nhiệm vụ: giúp có giới hạn → tự đi → hoàn thử.
-
-Tài liệu đối chiếu
-Cầu Ma V1.1 · hồ sơ nền
-Cầu Ma V3 · bộ thiết kế hợp nhất
 
 Pháp khí Cầu Ma và nguồn mở khóa
 
@@ -9052,13 +9024,7 @@ Tiên Nghịch V3 · sự kiện, ngoại trang và vòng quay
 
 Chuyên mục Nhật ký
 
-Thông báo tháng 11 và mốc dự kiến của dự án.
-
-Thông báo tháng 11/2026
-
-Thông báo dự án · Trao đổi dự án · tháng 11
-
-Các mốc dưới đây ghi lại nội dung do chủ dự án đưa ra để thông báo. Lịch dự kiến được giữ nguyên trạng thái đến ngày đối chiếu 14/11/2026. Giờ hiển thị là giờ Việt Nam.
+Thông báo tháng 11 và mốc dự kiến của dự án. Các mốc dưới đây ghi lại nội dung do chủ dự án đưa ra để thông báo. Lịch dự kiến được giữ nguyên trạng thái đến ngày đối chiếu 14/11/2026. Giờ hiển thị là giờ Việt Nam.
 
 Ngày: 04/11
 Nội dung: Bảo trì từ 19:00, dự kiến 30 phút. Nội dung liên quan nâng cấp bang hội và bang chiến.
