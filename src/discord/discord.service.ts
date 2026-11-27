@@ -21,6 +21,7 @@ import {
 } from 'discord.js';
 import type { EnvironmentVariables } from '../config/environment.js';
 import { GeminiService } from '../gemini/gemini.service.js';
+import { MAX_QUESTION_LENGTH } from '../gemini/knowledge/knowledge.js';
 import { LiveUpdatesService } from '../live/live-updates.service.js';
 import { UserVerificationService } from '../verification/user-verification.service.js';
 import { splitDiscordMarkdown } from './discord-markdown.js';
@@ -239,7 +240,7 @@ export class DiscordService
             .setName('text')
             .setDescription('Câu hỏi sẽ được gửi đến AI agent')
             .setRequired(true)
-            .setMaxLength(4_000),
+            .setMaxLength(MAX_QUESTION_LENGTH),
         )
         .toJSON(),
     ];

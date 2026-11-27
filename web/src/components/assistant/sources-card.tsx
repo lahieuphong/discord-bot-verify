@@ -1,0 +1,229 @@
+import {
+  BookOpenIcon,
+  ChevronDownIcon,
+  CoinsIcon,
+  Gamepad2Icon,
+  Loader2Icon,
+  SearchIcon,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { api } from '@/lib/api';
+import { formatDateTime, normalizeSearch } from '@/lib/format';
+import { formatNumber } from '@/lib/gemini';
+import type {
+  AssistantOverview,
+  AssistantSource,
+  AssistantTokenCounts,
+} from '@/lib/types';
+import { cn } from '@/lib/utils';
+
+interface IndexedLine {
+  text: string;
+  /** Lower-case, without diacritics: computed once, not per keystroke. */
+  key: string;
+}
+
+function indexLines(content: string): IndexedLine[] {
+  return content
+    .split('\n')
+    .map((text) => ({ text, key: normalizeSearch(text) }));
+}
+
+function SourceViewer({
+  source,
+  onError,
+}: {
+  source: AssistantSource;
+  onError: (error: unknown) => void;
+}) {
+  const [content, setContent] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    let active = true;
+    api
+      .assistantSource(source.id)
+      .then((result) => {
+        if (active) setContent(result.content);
+      })
+      .catch((error: unknown) => {
+        if (active) onError(error);
+      });
+    return () => {
+      active = false;
+    };
+  }, [source.id, onError]);
+
+  const index = useMemo(
+    () => (content === null ? null : indexLines(content)),
+    [content],
+  );
+  const shown = useMemo(() => {
+    if (content === null || index === null) return null;
+    if (query.trim().length < 2) return content;
+    const needle = normalizeSearch(query);
+    const lines = index
+      .filter((line) => line.key.includes(needle))
+      .map((line) => line.text);
+    return lines.length > 0
+      ? lines.join('\n')
+      : 'Không có dòng nào chứa từ này.';
+  }, [content, index, query]);
+
+  return (
+    <div className="mt-3 flex flex-col gap-2">
+      <div className="relative">
+        <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Tìm trong nguồn này (không cần dấu)…"
+          className="pl-9"
+          aria-label={`Tìm trong ${source.title}`}
+        />
+      </div>
+      {shown === null ? (
+        <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
+          <Loader2Icon className="size-4 animate-spin" /> Đang tải nội dung…
+        </div>
+      ) : (
+        <pre className="max-h-96 overflow-auto rounded-lg border bg-muted/40 p-3 font-sans text-xs leading-relaxed whitespace-pre-wrap">
+          {shown}
+        </pre>
+      )}
+    </div>
+  );
+}
+
+export function SourcesCard({
+  overview,
+  tokens,
+  countingTokens,
+  onCountTokens,
+  onError,
+}: {
+  overview: AssistantOverview;
+  tokens: AssistantTokenCounts | null;
+  countingTokens: boolean;
+  onCountTokens: () => void;
+  onError: (error: unknown) => void;
+}) {
+  const [open, setOpen] = useState<string | null>(null);
+
+  return (
+    <Card className="gap-3">
+      <CardHeader>
+        <CardTitle className="text-base">Nguồn kiến thức</CardTitle>
+        <CardDescription>
+          Toàn bộ các nguồn được gửi kèm mỗi câu hỏi. Phần lấy từ game được tạo
+          lúc {formatDateTime(overview.gameKnowledgeGeneratedAt)} bằng lệnh{' '}
+          <code className="rounded bg-muted px-1">npm run knowledge:sync</code>{' '}
+          (đọc thư mục TuTienHTML_r3).
+        </CardDescription>
+        <CardAction>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onCountTokens}
+            disabled={countingTokens || !overview.keyConfigured}
+            title="Hỏi Google số token của từng nguồn (miễn phí, không tốn lượt)"
+          >
+            {countingTokens ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              <CoinsIcon />
+            )}
+            Đếm token
+          </Button>
+        </CardAction>
+      </CardHeader>
+
+      <CardContent className="flex flex-col gap-3">
+        {tokens && (
+          <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            Mỗi câu hỏi gửi kèm khoảng{' '}
+            <b className="tabular-nums">{formatNumber(tokens.total)}</b> token
+            chỉ dẫn. Con số này tính vào hạn mức token mỗi phút của key, nên
+            nguồn càng dài thì mỗi phút trả lời được càng ít câu.
+          </p>
+        )}
+
+        <ul className="flex flex-col gap-2">
+          {overview.sources.map((source) => {
+            const isOpen = open === source.id;
+            const sourceTokens = tokens?.sections[source.id];
+
+            return (
+              <li key={source.id} className="rounded-xl border p-4">
+                <div className="flex flex-wrap items-start gap-3">
+                  <span
+                    className={cn(
+                      'flex size-9 shrink-0 items-center justify-center rounded-lg',
+                      source.origin === 'game'
+                        ? 'bg-emerald-50 text-emerald-600'
+                        : 'bg-zinc-100 text-zinc-700',
+                    )}
+                  >
+                    {source.origin === 'game' ? (
+                      <Gamepad2Icon className="size-[18px]" />
+                    ) : (
+                      <BookOpenIcon className="size-[18px]" />
+                    )}
+                  </span>
+                  <div className="min-w-0 flex-1 basis-[calc(100%-3rem)] sm:basis-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-medium">{source.title}</span>
+                      <Badge
+                        variant={source.origin === 'game' ? 'success' : 'muted'}
+                      >
+                        {source.origin === 'game'
+                          ? 'Từ mã nguồn game'
+                          : 'Wiki có sẵn'}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {source.summary}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground tabular-nums">
+                      {formatNumber(source.characters)} ký tự ·{' '}
+                      {formatNumber(source.lines)} dòng
+                      {sourceTokens !== undefined &&
+                        ` · ${formatNumber(sourceTokens)} token`}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-12 sm:ml-0"
+                    aria-expanded={isOpen}
+                    onClick={() => setOpen(isOpen ? null : source.id)}
+                  >
+                    {isOpen ? 'Thu gọn' : 'Xem nội dung'}
+                    <ChevronDownIcon
+                      className={cn(
+                        'transition-transform',
+                        isOpen && 'rotate-180',
+                      )}
+                    />
+                  </Button>
+                </div>
+                {isOpen && <SourceViewer source={source} onError={onError} />}
+              </li>
+            );
+          })}
+        </ul>
+      </CardContent>
+    </Card>
+  );
+}

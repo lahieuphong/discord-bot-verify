@@ -165,6 +165,35 @@ The **Gemini API** tab of `/export-excel` shows, for the current key:
 Quotas belong to the Google **project**, not the key: a replacement key only
 brings fresh quota if it comes from another project.
 
+### What /question knows (game knowledge)
+
+Every `/question` is sent to Gemini with one system instruction
+(`src/gemini/knowledge/knowledge.ts`): the assistant's role sentence, answering
+rules, and these knowledge sources:
+
+| Source | Where it comes from |
+| --- | --- |
+| Wiki dự án Tu Tiên | `src/config/utils/const.ts` (hand-written wiki, ~120k tokens) |
+| Tính năng trong game | `scripts/game-knowledge/features.vi.json` (screen descriptions written from the game's UI code) + menu, screen names and unlock levels read from the game |
+| Nhiệm vụ trong game | Generated from the game data: 40 main quests (NPC, goal, rewards), daily, weekly, achievements, sect tasks, guild quests |
+
+The last two live in `src/gemini/knowledge/game-knowledge.generated.ts`, which is
+generated from the game source and committed. After the game changes, run:
+
+```bash
+npm run knowledge:sync                      # default E:\Phong_Nho_IT\TuTienHTML_r3
+npm run knowledge:sync -- D:\games\TuTienHTML_r3     # or set GAME_SOURCE_DIR
+```
+
+The game folder must have its dependencies installed (`corepack pnpm install`);
+the script runs the game's own `tsx` to read its TypeScript data and never
+writes there. It warns about screens without a description and missing texts.
+
+The **Trợ lý AI** tab of `/export-excel` shows the flow of `/question`, the
+role and rules, every knowledge source (searchable, with token counts from
+Google's free countTokens) and a **Hỏi thử** box that asks Gemini exactly like
+`/question` (counted on the Gemini tab as source `admin`, not posted to Discord).
+
 ## Run
 
 ```bash
@@ -230,8 +259,8 @@ npm run start:prod
 
 ## Member page and Excel export
 
-`/export-excel` is the admin page (Vietnamese UI), with two tabs: **Thành viên**
-(below) and **Gemini API** (see *Gemini usage tab* above). It is a small React app in
+`/export-excel` is the admin page (Vietnamese UI), with three tabs: **Thành viên**
+(below), **Gemini API** and **Trợ lý AI** (see the Gemini sections above). It is a small React app in
 [`web/`](web/) built with [shadcn/ui](https://ui.shadcn.com) components and
 Tailwind CSS; `npm run build` compiles it into `dist/web`, which Nest serves.
 Text uses SF Pro where the system provides it (macOS/iOS or a local install)

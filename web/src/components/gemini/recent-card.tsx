@@ -23,6 +23,12 @@ function source(request: GeminiRecentRequest): string {
     return request.requester ? `Discord · @${request.requester}` : 'Discord';
   }
 
+  if (request.source === 'admin') {
+    return request.requester
+      ? `Hỏi thử · ${request.requester}`
+      : 'Hỏi thử trên trang';
+  }
+
   return 'HTTP /question';
 }
 

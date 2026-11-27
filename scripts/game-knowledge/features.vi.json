@@ -1,0 +1,952 @@
+[
+  {
+    "page": "cultivate",
+    "name": "Tu luyện",
+    "summary": "Màn hình chính: chọn hoạt động chính để nhân vật tự tích tu vi và tài nguyên, kể cả khi bạn offline.",
+    "unlock": "Có sẵn từ đầu. Hái dược và Đào khoáng mở ở Ngưng Khí tầng 2; nút Luyện thể chỉ hiện khi đã nhập môn Cổ Thần.",
+    "howTo": [
+      "Bế quan: tu vi 180%, không có vật phẩm.",
+      "Săn yêu thú: bấm sẽ mở Bản đồ để chọn điểm săn; tu vi 100%, mỗi chu kỳ là một trận, thắng mới nhận tu vi, linh thạch, vật liệu, trang bị.",
+      "Hái dược / Đào khoáng: tu vi 70%, mỗi 30 giây nhận 1–2 Linh thảo / Thiết khoáng.",
+      "Thanh tu vi góc trên cho biết tốc độ tu vi/giây và thời gian còn lại; đủ tu vi thì bấm «Lên tầng kế» hoặc «Có thể đột phá».",
+      "Khi vắng mặt, game vẫn tính theo hoạt động đang chọn, tối đa 12 giờ; mỗi cấp Tĩnh Thất ở Động phủ thêm 1 giờ (tối đa 24 giờ)."
+    ],
+    "tips": [
+      "Chỉ cần tu vi thì Bế quan; cần đồ và linh thạch thì đi săn.",
+      "Đổi hoạt động không mất phần đã tích: khoảng trước đó được tính theo hoạt động cũ rồi mới đổi."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "character",
+    "name": "Nhân vật",
+    "summary": "Bảng nhân vật: xem và thay trang bị đang mặc, chỉ số chiến đấu, thiên tư và bộ trang bị. Các tab Pháp bảo, Kinh mạch, Linh căn, Cổ Thần, Ma tu, Ngoại hình cũng nằm ở đây.",
+    "unlock": "Có sẵn từ đầu.",
+    "howTo": [
+      "Bấm một trong tám ô quanh nhân vật (Đầu, Pháp y, Đai, Giày, Vũ khí, Hộ oản, Nhẫn, Ngọc bội) để xem món đang mặc và các món trong túi hợp ô đó; bấm đúp một món để mặc.",
+      "«Tự trang bị» chọn món tốt nhất cho từng ô.",
+      "Thuộc tính: bấm một dòng chỉ số để xem nguồn đóng góp và công thức.",
+      "Thiên tư: Căn cốt, Ngộ tính, Đạo tâm, Cơ duyên. Nút Tẩy tủy cho phân bổ lại đủ 20 điểm (mỗi loại 2–10), tốn 2.000 linh thạch × cấp hiện tại.",
+      "Bộ trang bị: xem hiệu ứng bộ đã kích hoạt."
+    ],
+    "tips": [
+      "Ngộ tính +2% tốc độ tu vi mỗi điểm, Cơ duyên +2% tỉ lệ rơi đồ mỗi điểm."
+    ],
+    "tabs": [
+      {
+        "name": "Thuộc tính",
+        "summary": "Chỉ số chiến đấu và mở rộng, kèm nguồn đóng góp."
+      },
+      {
+        "name": "Thiên tư",
+        "summary": "Bốn thiên tư, xuất thân và Tẩy tủy."
+      },
+      {
+        "name": "Bộ trang bị",
+        "summary": "Hiệu ứng bộ đang kích hoạt."
+      }
+    ]
+  },
+  {
+    "page": "treasure",
+    "name": "Pháp bảo",
+    "summary": "Kết và nuôi pháp bảo bản mệnh: cộng chỉ số theo cấp và có kỹ năng tự kích hoạt khi hồi xong, không chiếm ô kỹ năng.",
+    "unlock": "Kết Đan Sơ kỳ.",
+    "howTo": [
+      "Bấm «Kết bản mệnh» ở pháp bảo muốn dùng; mỗi lúc chỉ một món. Đổi sang món khác tốn 3.000 linh thạch, giữ nguyên cấp nuôi dưỡng.",
+      "Nuôi dưỡng tốn linh thạch và Xích Sa (từ cấp 5 thêm Tàn Nguyệt Phiến). Cấp tối đa 10, lên 15 khi đạt Không Linh.",
+      "Cấp 5 được chọn nhánh A hoặc B; đổi nhánh sau đó tốn 5.000 linh thạch.",
+      "Tab Luyện pháp bảo: gom đủ mảnh để ghép phôi, rồi nâng bậc Tàn phôi → Thức linh → Chân bảo."
+    ],
+    "tips": [
+      "Tàn phôi chỉ đánh 70% sức ghi trên mô tả, Thức linh 100%, Chân bảo 115%.",
+      "Có thể «Đổi mảnh» bằng vật liệu chỉ định nếu thiếu mảnh."
+    ],
+    "tabs": [
+      {
+        "name": "Bản mệnh",
+        "summary": "Chọn pháp bảo bản mệnh, nuôi dưỡng, chọn nhánh."
+      },
+      {
+        "name": "Luyện pháp bảo",
+        "summary": "Ghép phôi từ mảnh, nâng bậc; mảnh rơi ở bí cảnh và chương Cổ Thần."
+      }
+    ]
+  },
+  {
+    "page": "meridian",
+    "name": "Kinh mạch",
+    "summary": "Sơ đồ kinh mạch: khai mở Khí Hải rồi đả thông từng mạch qua 3 nấc Khai → Thông → Hợp; chỉ mạch đang cộng hưởng mới cộng chỉ số.",
+    "unlock": "Nguyên Anh Sơ kỳ (bấm «Khai mở Khí Hải», lần đầu tặng 5 Thông Mạch Dưỡng Ngọc Đan).",
+    "howTo": [
+      "Bấm một mạch trên sơ đồ, rồi «Đả thông huyệt» để lên nấc kế; tốn linh thạch, Thông Mạch Dưỡng Ngọc Đan (2/5/10 viên) và tinh chất vùng.",
+      "Tích ô «Cộng hưởng» rồi bấm «Lưu cộng hưởng»: tối đa 4 chính mạch và 2 kỳ mạch; đổi miễn phí.",
+      "Ba lõi đan điền: Khí Hải (Nguyên Anh), Nguyên Phủ (Hóa Thần, cần 8 mạch đã Thông + 50 cảm ngộ), Đạo Cung (Vấn Đỉnh, cần 12 mạch Thông + 100 cảm ngộ). Lõi chưa mở thì mạch thuộc lõi đó chưa đả thông được.",
+      "Mỗi lõi lên tối đa 5 cấp, mỗi cấp trên 1 cho +1% sinh lực."
+    ],
+    "tips": [
+      "Hiệu quả mỗi nấc là tổng tại nấc đó, không cộng dồn ba nấc.",
+      "Chọn cộng hưởng những mạch hợp lối đánh của bạn; đổi lúc nào cũng được."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "linhcan",
+    "name": "Linh căn",
+    "summary": "Ngũ Hành Linh Căn quanh Thiên Nghịch Châu: nâng năm căn Kim, Mộc, Thủy, Hỏa, Thổ và thăng châu để cộng chỉ số; không bắt buộc để đột phá.",
+    "unlock": "Nguyên Anh Sơ kỳ và đã gia nhập một tông môn; làm chuỗi 3 nhiệm vụ ngay trên màn hình. Chỉ có ở nhân vật Tiên Nghịch.",
+    "howTo": [
+      "Làm lần lượt: Đọc ngọc giản → Thử luyện năm đợt (thua được thử lại) → Dẫn khí bằng vũ khí truyền thừa của tông môn ở ô vũ khí chính.",
+      "Chọn một căn rồi «Nâng 1 cấp» hoặc «Nâng đến mốc», tốn Tinh Túy cùng hành, linh thạch và cảm ngộ.",
+      "Năm căn đủ cấp yêu cầu thì «Thăng châu» để tăng khuếch đại và mở trần cấp căn mới (tối đa bậc 10).",
+      "Có một ô cộng hưởng (liên kết tương sinh hoặc linh căn phái sinh), mở từ châu bậc 1, đổi miễn phí ngoài trận."
+    ],
+    "tips": [
+      "Không cầm vũ khí truyền thừa của tông môn đang theo thì Linh căn bị phong bế: tiến độ vẫn giữ nhưng chỉ số bằng 0.",
+      "Tinh Túy kiếm bằng săn ở vùng cùng hành, nhiệm vụ tuần, hoặc đổi 3:1 từ hành khác."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "ancient",
+    "name": "Cổ Thần",
+    "summary": "Đường luyện thể Cổ Thần: thắng chín chương lấy chứng sao, tôi luyện lên chín sao, lắp rune và chọn cộng hưởng.",
+    "unlock": "Nguyên Anh Sơ kỳ và đã xong chương Phá Đan Thành Anh (Nhiệm vụ → Chương truyện).",
+    "howTo": [
+      "Chín chương: thắng chương để nhận chứng sao (lần đầu chọn một trong hai lựa chọn); chương mở theo cảnh giới và số sao.",
+      "Tôi luyện: mỗi sao 4 bậc (Bì → Cốt → Huyết → Thần), tốn cổ huyết và tôi cốt; cần chứng của chương tương ứng.",
+      "Chuyển hoạt động sang Luyện thể để được 1 tôi cốt mỗi 10 phút (tu vi 100%), tính cả khi offline.",
+      "Lắp tối đa 3 rune; chọn tối đa 3 sao cộng hưởng +2% sinh lực hoặc +2% công."
+    ],
+    "tips": [
+      "Đánh lặp có thưởng 3 lần/ngày; luyện tập không giới hạn nhưng không thưởng.",
+      "Chương 7–9 có kiếp trước boss; thua mất 10% tôi cốt, không mất sao.",
+      "Không theo Cổ Thần vẫn có Mô phỏng Cổ Ấn: mỗi bậc thắng 3 bài khôi lỗi."
+    ],
+    "tabs": [
+      {
+        "name": "Cổ thể & tôi luyện",
+        "summary": "Chín sao, tôi luyện, luyện thể, Mô phỏng Cổ Ấn."
+      },
+      {
+        "name": "Chín chương",
+        "summary": "Đánh chương lấy chứng sao."
+      },
+      {
+        "name": "Rune & cộng hưởng",
+        "summary": "Lắp rune, chọn cộng hưởng."
+      }
+    ]
+  },
+  {
+    "page": "demonic",
+    "name": "Ma tu",
+    "summary": "Chọn vận ma đạo: ba nhánh Sát Tâm, Hồn Khế, Nghịch Thể, mỗi nhánh 4 nấc; chỉ nhánh chính cộng chỉ số khi đang vận ma đạo. Đây không phải dãy cảnh giới thứ hai.",
+    "unlock": "Nguyên Anh Sơ kỳ và đã xong chương Phá Đan Thành Anh; vào trang và chọn nhánh chính.",
+    "howTo": [
+      "«Luyện sát khí» 2 lần/ngày: thắng nhận 1 Ma tâm chứng (ma chướng +25).",
+      "Mở nấc Kết Khế → Dẫn Sát → Tự Chủ → Ngự Ma bằng cảm ngộ, Ma tâm chứng và linh thạch; nấc yêu cầu Nguyên Anh, Hóa Thần, Vấn Đỉnh, Khuy Niết.",
+      "Chuyển Chính đạo / Vận ma đạo hoặc đổi nhánh chính: tốn linh thạch, hồi 24 giờ; nấc đã mở được giữ.",
+      "Nút «Tĩnh tâm» dùng đan để giảm 20 ma chướng (hồi 30 phút)."
+    ],
+    "tips": [
+      "Ma chướng 40–69: kỹ năng ma +8% sát thương, hồi phục nhận −5%; 70–89: +15% / −15%; chạm 90 bị Tâm Ma Phản Phệ 6 giây.",
+      "Ngoài trận, ma chướng tự giảm 1 điểm mỗi 12 giây; tu vi không bao giờ bị âm vì ma chướng."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "skins",
+    "name": "Ngoại hình",
+    "summary": "Tủ ngoại hình (skin) và ngoại hình phụ: xem trước, nhận, mặc skin; dùng khung, hào quang, danh hiệu, trang trí.",
+    "unlock": "Có sẵn từ đầu; từng skin có điều kiện nhận riêng ghi ở dòng Nguồn.",
+    "howTo": [
+      "Chọn nhóm ở các tab trên, bấm một skin để xem trước bên phải (xem được cả bản nam và nữ).",
+      "Đạt điều kiện thì bấm «Nhận»; một số skin đổi bằng huy hiệu Chiến Tuyến, lễ phù, hoặc nhận ở hoạt động sự kiện.",
+      "Bấm «Mặc» / «Bỏ mặc». Khung xem trước có so sánh chỉ số nếu đổi skin.",
+      "Tab Ngoại hình phụ: bấm «Dùng» cho khung, hào quang, danh hiệu, trang trí đã có."
+    ],
+    "tips": [
+      "Chỉ skin đang mặc mới cộng chỉ số; skin trong tủ không cộng dồn. Skin không đổi hồi chiêu, thu nhập hay cảnh giới.",
+      "Skin có thời hạn hết hạn sẽ tự bỏ mặc; một số skin chỉ dành cho nam hoặc nữ.",
+      "Ngoại hình phụ không có chỉ số."
+    ],
+    "tabs": [
+      {
+        "name": "Các nhóm skin",
+        "summary": "Mỗi nhóm một tab, tên nhóm lấy theo dữ liệu game."
+      },
+      {
+        "name": "Ngoại hình phụ",
+        "summary": "Khung, hào quang, danh hiệu, trang trí."
+      }
+    ]
+  },
+  {
+    "page": "inventory",
+    "name": "Túi đồ",
+    "summary": "Hành trang: xem, mặc, cường hóa, khóa, bán hoặc phân giải trang bị; xem công dụng và nơi kiếm vật liệu.",
+    "unlock": "Có sẵn từ đầu.",
+    "howTo": [
+      "Tab Trang bị: bấm một món để xem chỉ số và so với món đang mặc; bấm đúp để mặc hoặc tháo.",
+      "Cường hóa luôn thành công, không vỡ đồ; tốn linh thạch và Thiết khoáng (đồ mới dùng tinh luyện thạch, mốc +5/10/15/20 thêm ấn ổn định). Có thể chuyển cường hóa sang món cùng ô.",
+      "«Bán / phân giải nhiều món» cho chọn theo bậc phẩm chất; món đang mặc, đã khóa hoặc yêu thích không bán được.",
+      "Tab Vật liệu: xem công dụng; «Nơi kiếm · đi tới» mở thẳng nơi rơi; đan tăng tốc tu vi bấm «Dùng»."
+    ],
+    "tips": [
+      "Túi gốc 40 ô, mỗi cấp phòng Kho ở Động phủ thêm 5 ô. Túi đầy thì đồ mới tự vào Kho đồ; cả hai đầy thì ngừng rơi đồ (không mất món nào).",
+      "Khóa món quý để tránh bán nhầm."
+    ],
+    "tabs": [
+      {
+        "name": "Trang bị",
+        "summary": "Đồ trong túi, cường hóa, bán, phân giải, tự trang bị."
+      },
+      {
+        "name": "Vật liệu",
+        "summary": "Linh thạch và vật liệu, công dụng và nơi kiếm."
+      }
+    ]
+  },
+  {
+    "page": "vault",
+    "name": "Kho đồ",
+    "summary": "Kho chung của tài khoản: gửi và lấy trang bị, vật liệu giữa túi và kho, dùng chung cho hai nhân vật.",
+    "unlock": "Có sẵn từ đầu.",
+    "howTo": [
+      "Cột trái là kho, cột phải là túi của bạn. Bấm đúp một ô để chuyển ngay cả món hoặc cả chồng.",
+      "Với vật liệu, nhập số lượng (hoặc bấm «Tất cả») rồi bấm «Gửi vào kho» / «Lấy về túi».",
+      "«Chọn nhiều» để đánh dấu nhiều ô rồi chuyển một lần; hoặc «Gửi tất cả» / «Lấy tất cả».",
+      "Ô tìm kiếm lọc theo tên ở cả hai bên."
+    ],
+    "tips": [
+      "Kho có 50 ô trang bị, mỗi cấp Tàng Bảo Khố ở Động phủ thêm 10 ô (tối đa 100); vật liệu không giới hạn loại.",
+      "Đồ đang mặc, đồ đã khóa và vật liệu khóa giao dịch không gửi được; mặc định không gửi linh thạch vào kho.",
+      "Túi đầy thì trang bị mới tự vào Kho đồ."
+    ],
+    "tabs": [
+      {
+        "name": "Trang bị",
+        "summary": "Chuyển trang bị giữa kho và túi."
+      },
+      {
+        "name": "Vật liệu",
+        "summary": "Chuyển vật liệu theo số lượng."
+      }
+    ]
+  },
+  {
+    "page": "skills",
+    "name": "Công pháp",
+    "summary": "Học kỹ năng và sắp bộ kỹ năng: nhân vật tự ra chiêu theo thứ tự ưu tiên và điều kiện bạn đặt.",
+    "unlock": "Có sẵn từ đầu. Ô chủ động mở ở Ngưng Khí tầng 1/3/6/10; ô nội tại ở Ngưng Khí tầng 5, Trúc Cơ, Kết Đan.",
+    "howTo": [
+      "Bộ kỹ năng: thêm kỹ năng đã học, dùng ↑↓ để xếp ưu tiên, đặt Điều kiện và Mục tiêu cho từng chiêu, rồi bấm «Lưu».",
+      "4 cấu hình: Farm (săn và khi vắng mặt), Boss, PvP, Thủ PvP; chưa lưu riêng thì theo Farm.",
+      "Danh sách Công pháp: học kỹ năng tông môn bằng cống hiến (đúng tông môn, đủ cảnh giới và chức vị).",
+      "Công pháp mở rộng: đổi bí kíp bằng 20 cống hiến (hoặc vượt bí cảnh lần đầu để nhận miễn phí), rồi học kỹ năng bằng cảm ngộ."
+    ],
+    "tips": [
+      "Mỗi nhịp nhân vật dùng chiêu đầu tiên từ trên xuống đang sẵn sàng, đủ linh lực và thỏa điều kiện; không có thì đánh thường.",
+      "Tab Bù nhìn cho thử sát thương mỗi giây của bộ đã lưu, không tốn gì."
+    ],
+    "tabs": [
+      {
+        "name": "Bộ kỹ năng",
+        "summary": "Luật xuất chiêu, nội tại, học kỹ năng."
+      },
+      {
+        "name": "Công pháp mở rộng",
+        "summary": "Bí kíp và kỹ năng học bằng cảm ngộ."
+      },
+      {
+        "name": "Bù nhìn",
+        "summary": "Thử sát thương bộ kỹ năng, không thưởng."
+      }
+    ]
+  },
+  {
+    "page": "technique",
+    "name": "Tâm pháp",
+    "summary": "Chọn và nâng tâm pháp: tâm pháp chính tăng tốc độ tu vi và chỉ số; tâm pháp phụ chỉ cho một phần chỉ số.",
+    "unlock": "Có sẵn từ đầu với Dẫn Khí Quyết. Ô phụ 1 mở ở Trúc Cơ, ô phụ 2 ở Kết Đan.",
+    "howTo": [
+      "Bấm «Học» ở tâm pháp muốn có: Trường Xuân Công từ Ngưng Khí tầng 10 (2.500 linh thạch); tâm pháp năm hướng từ Trúc Cơ, tâm pháp thượng thừa từ Nguyên Anh, học bằng linh thạch và cống hiến ở đúng tông môn.",
+      "«Đặt làm chính» hoặc «Đặt làm phụ»; đổi không mất gì, tu vi đã tích được chốt theo tâm pháp cũ.",
+      "«Lên cấp» tốn linh thạch (tâm pháp từ Trúc Cơ thêm cảm ngộ), tối đa cấp 10."
+    ],
+    "tips": [
+      "Tâm pháp phụ chỉ cho 40% chỉ số và không cho tốc độ tu vi, nên đặt tâm pháp tăng tu vi mạnh nhất làm chính.",
+      "Chỉ đệ tử của tông môn tương ứng mới học được tâm pháp của hướng đó."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "breakthrough",
+    "name": "Đột phá",
+    "summary": "Lên tầng, lên tiểu cảnh giới và đột phá đại cảnh giới; bảng Đường tu hành cho xem trước từng cảnh giới.",
+    "unlock": null,
+    "howTo": [
+      "Lên tầng nhỏ: đủ tu vi là bấm «Lên …». Từ Trúc Cơ: lên Trung kỳ cần thắng 3 khảo chứng, lên Hậu kỳ cần hạ 1 boss hợp cấp, lên Viên mãn cần thắng «Thử thách biến thể».",
+      "Đại đột phá không tự xảy ra khi vắng mặt: cần đủ tu vi, đan, vật liệu và điều kiện riêng (vd. đi hết ba tuyến hóa phàm mới lên Hóa Thần).",
+      "Bước 1 «Vào thử thách» (trận tự động, cấu hình Boss). Bước 2 «Đột phá»: 30% → 40% → 60% → lần thứ tư chắc chắn.",
+      "Thua: mất 20% vật liệu thường được đánh dấu, có thể mất một phần tu vi (không tụt cảnh giới), phải thắng lại thử thách."
+    ],
+    "tips": [
+      "Tị Lôi Phù, Hồi Nguyên Đan hoặc Hộ Thân Trận Bàn giữ tu vi khi thất bại, nhưng bị tiêu dù thành hay bại.",
+      "Bổ Khuyết Đan bù phần tu vi thiếu khi đã đạt 85–95% mục tiêu.",
+      "Tu vi mất khi thua tối đa 25% mục tiêu trong 24 giờ."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "ascend",
+    "name": "Chứng đạo",
+    "summary": "Các hệ thống cảnh giới cao: Âm dương, Bản nguyên ngũ hành, cửa Thiên Nhân ngũ suy/Huyền Kiếp, danh hiệu và Tiên linh hóa. \"Bản nguyên ngũ hành\" ở đây khác với màn Bản nguyên (12 bản nguyên) trong nhóm Ngộ đạo.",
+    "unlock": "Tiên linh hóa từ Anh Biến; các tab khác hiện từ Vấn Đỉnh, hệ thống mở dần từ Âm Hư.",
+    "howTo": [
+      "Mỗi cửa 5 lượt/ngày, dùng cấu hình Boss, thua chỉ mất lượt.",
+      "Vượt hết 5 cửa ngũ suy mới lên được Không Niết, hết 9 Huyền Kiếp mới lên Không Kiếp."
+    ],
+    "tips": [
+      "Vượt cửa ở tab «Suy & Huyền Kiếp» hay «Cửa thử thách» đều tính chung."
+    ],
+    "tabs": [
+      {
+        "name": "Âm dương & bản nguyên",
+        "summary": "Từ Âm Hư chọn Thế Âm (+thân, −Công) hoặc Thế Dương (ngược lại), đổi tốn 5 Âm Tinh Sa. Từ Khuy Niết lĩnh ngộ Hỏa/Thủy/Lôi/Thổ/Phong: một chính, từ Tịnh Niết thêm một phụ."
+      },
+      {
+        "name": "Cửa thử thách & danh hiệu",
+        "summary": "Ngũ suy mở ở Toái Niết Viên mãn, Huyền Kiếp ở Không Huyền Viên mãn, Chứng đạo ở Đạp Thiên. Chỉ danh hiệu đang mang cộng chỉ số."
+      },
+      {
+        "name": "Suy & Huyền Kiếp",
+        "summary": "Cửa có luật riêng; thua không mất gì, thắng lần đầu nhận 20 cảm ngộ."
+      },
+      {
+        "name": "Tiên linh hóa",
+        "summary": "Luyện Tiên Linh Ngọc để nâng hình thái."
+      },
+      {
+        "name": "Cơ chế cảnh giới",
+        "summary": "Quyền lợi theo đại cảnh giới."
+      }
+    ]
+  },
+  {
+    "page": "cave",
+    "name": "Động phủ",
+    "summary": "Cơ ngơi riêng: nâng phòng để tăng tốc tu vi, kéo dài tích lũy khi vắng mặt, thêm lò chế tạo, mở rộng túi và trồng linh điền.",
+    "unlock": "Trúc Cơ Sơ kỳ",
+    "howTo": [
+      "Bấm «Nâng lên cấp …» (tốn linh thạch + vật liệu, có thời gian chờ, chạy cả khi offline). Mỗi lúc chỉ nâng một phòng.",
+      "Tụ Linh Trận +4% tốc độ tu vi/cấp; Tĩnh Thất +1 giờ tích lũy vắng mặt/cấp (12 → 24 giờ); Đan Phòng 2 cấp thêm 1 lò; Khí Phòng −6% thời gian chế tạo/cấp; Linh Điền +1 ô trồng/cấp; Kho +5 ô túi/cấp; Tàng Bảo Khố +10 ô Kho đồ chung/cấp.",
+      "Bỏ qua chờ: phòng (3.500 + 500 × cấp phòng) linh thạch/giờ còn lại, ô trồng 2.500/giờ."
+    ],
+    "tips": [
+      "Treo máy nhiều thì ưu tiên Tụ Linh Trận và Tĩnh Thất.",
+      "Nhớ «Nhận phần hôm nay» ở tab Cửa hàng & nhận ngày."
+    ],
+    "tabs": [
+      {
+        "name": "Các phòng",
+        "summary": "Nâng 7 phòng."
+      },
+      {
+        "name": "Linh điền & sinh cảnh",
+        "summary": "Gieo, thu, gieo lại hàng loạt; cây chín không héo. Khu sinh cảnh trồng dược liệu riêng."
+      },
+      {
+        "name": "Cửa hàng & nhận ngày",
+        "summary": "Nhận vật liệu phụ mỗi ngày, mua vật liệu giá cố định."
+      }
+    ]
+  },
+  {
+    "page": "craft",
+    "name": "Chế tạo",
+    "summary": "Luyện đan, rèn trang bị, chế phù, bày trận; mẻ chạy theo thời gian thực, kể cả khi rời game.",
+    "unlock": null,
+    "howTo": [
+      "Chọn công thức (lọc theo nghề, «Làm được ngay» hoặc tìm tên/nguyên liệu) rồi «Bắt đầu»; «Đặt đầy lò» đặt vào mọi lò trống.",
+      "Nguyên liệu trừ khi bắt đầu; «Hủy mẻ» hoàn đủ. Xong thì thành phẩm tự vào túi.",
+      "Bỏ qua thời gian: 2.500 linh thạch mỗi giờ còn lại.",
+      "Số lò = 1 + 1 lò mỗi 2 cấp Đan Phòng; Khí Phòng rút ngắn thời gian."
+    ],
+    "tips": [
+      "Tay nghề lên theo số mẻ xong (150 mẻ là cấp 10): mỗi cấp nhanh hơn 3%, cấp 5 thêm 1, cấp 10 thêm 2 sản phẩm mỗi mẻ.",
+      "Đại Tụ Linh Đan tối đa 4 mẻ/tuần; hủy mẻ trả lượt.",
+      "Một số công thức rèn chỉ mở sau lần đầu vượt bí cảnh tương ứng."
+    ],
+    "tabs": [
+      {
+        "name": "Luyện đan / Rèn khí / Chế phù / Trận pháp",
+        "summary": "Lọc theo nghề; Rèn khí lọc thêm bậc và loại. Đồ rèn có phẩm ngẫu nhiên."
+      },
+      {
+        "name": "Làm được ngay",
+        "summary": "Công thức đủ cảnh giới và nguyên liệu."
+      }
+    ]
+  },
+  {
+    "page": "dao",
+    "name": "Ngộ đạo",
+    "summary": "Hóa phàm: giấu tu vi sống giữa phàm nhân qua ba tuyến truyện để lấy cảm ngộ; và lĩnh ngộ bốn ý cảnh.",
+    "unlock": "Hóa phàm mở ở Nguyên Anh Viên mãn; lĩnh ngộ ý cảnh mở ở Hóa Thần Sơ kỳ.",
+    "howTo": [
+      "Bấm «Bước vào» một tuyến (Sinh tử, Nhân quả, Chân giả; đi song song được). Mỗi bước cần làm xong một việc đời thường như chế tạo, thu hoạch, săn quái (tính từ lúc bước bắt đầu), rồi chọn cách hành xử.",
+      "Không có đáp án đúng: một lựa chọn nhiều cảm ngộ hơn, lựa chọn kia thêm vật chất. Đổi lựa chọn đã chốt tốn 30.000 linh thạch.",
+      "Ý cảnh: lĩnh ngộ bằng cảm ngộ (60 × cấp kế, tối đa cấp 5), rồi «Đặt làm chính»; chỉ ý cảnh chính có hiệu lực."
+    ],
+    "tips": [
+      "Đi hết ba tuyến là điều kiện đột phá Hóa Thần.",
+      "Sát Lục mở sẵn; ba ý cảnh còn lại cần đi trọn tuyến cùng tên."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "domains",
+    "name": "Cây ý cảnh",
+    "summary": "Cây 16 nhánh ý cảnh, mỗi nhánh 6 nút; cộng chỉ số Công hoặc Thủ và mở chiêu Chứng cảnh tự kích.",
+    "unlock": "Sau chương truyện «Một Đời Trong Xưởng Mộc»; mỗi nhánh có cảnh giới riêng, sớm nhất Hóa Thần.",
+    "howTo": [
+      "Bấm nút trên cây rồi lĩnh ngộ theo thứ tự: N01 Lĩnh ngộ → N02 Công hoặc N03 Thủ → N04 Tinh nghiên → N05 Thâm ngộ → N06 Chứng cảnh.",
+      "Mỗi nút tốn cảm ngộ + Ngộ đạo ngọc giản + linh thạch (N01: 100 cảm ngộ, 2 ngọc giản; N06: 1.200 cảm ngộ, 20 ngọc giản). N06 còn cần xong chương truyện tương ứng.",
+      "Mỗi nút cho 1,5% (Công: Công vật lý và pháp thuật; Thủ: Sinh lực và Phòng ngự). Có cả N02 lẫn N03 thì «Attune nhánh này» để chọn nhánh dùng.",
+      "«Đặt làm chính» một ý cảnh; từ Vấn Đỉnh thêm «tiếng vọng» nhận 25%, không có Chứng cảnh."
+    ],
+    "tips": [
+      "Ngọc giản mua ở cửa hàng vật liệu phụ: 2 cống hiến = 1, tối đa 20/ngày.",
+      "Chứng cảnh chỉ thi triển khi đủ 5 ấn ý cảnh."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "origins",
+    "name": "Bản nguyên",
+    "summary": "Mười hai bản nguyên, mỗi cái 5 nút; bản nguyên chính cho hiệu ứng kích hoạt trong trận, bản nguyên phụ để ghép tổ hợp. Đây là màn Bản nguyên riêng (12 bản nguyên), khác với \"Bản nguyên ngũ hành\" trong tab Âm dương & bản nguyên của Chứng đạo.",
+    "unlock": "Khuy Niết Sơ kỳ (vài bản nguyên mở muộn hơn, tới Không Linh).",
+    "howTo": [
+      "Mở lần lượt Nguyên chủng → Nguyên lưu → Nguyên tướng → Chân nguyên → Hợp nguyên bằng mảnh đúng loại + cảm ngộ + linh thạch (20/40/70/110/160 mảnh). Nút càng cao càng mạnh.",
+      "Bấm «Đặt chính» / «Đặt phụ».",
+      "Tab Tổ hợp: đủ cảnh giới và cả hai bản nguyên đạt nút yêu cầu thì «Nghiên cứu»; chỉ tổ hợp của cặp chính–phụ đang lắp có tác dụng."
+    ],
+    "tips": [
+      "Mỗi tuần nhận miễn phí 20 mảnh một loại tùy chọn.",
+      "Đổi 5 ấn bí cảnh lấy 1 mảnh.",
+      "Đây khác Bản nguyên ngũ hành ở Chứng đạo."
+    ],
+    "tabs": [
+      {
+        "name": "Mười hai bản nguyên",
+        "summary": "Mở nút, đặt chính/phụ, nhận mảnh tuần."
+      },
+      {
+        "name": "Tổ hợp",
+        "summary": "24 tổ hợp, tốn mảnh hai bên, cảm ngộ và linh thạch."
+      }
+    ]
+  },
+  {
+    "page": "pets",
+    "name": "Linh thú",
+    "summary": "Thu phục, nuôi, tiến hóa linh thú đánh cùng bạn; chỉ số tính theo % chỉ số chủ, mỗi lúc một con xuất chiến.",
+    "unlock": "Khu săn khế ước đầu tiên mở ở Trúc Cơ Sơ kỳ; linh thú boss nhận sau khi hạ boss đó.",
+    "howTo": [
+      "Săn khế ước: bấm «Săn» đánh thủ vệ ổ, thắng nhận khế ấn và tinh hoa, thua hoàn lượt. 6 lượt có thưởng/ngày, tích tối đa 12.",
+      "Đủ khế ấn và qua «Thử thách thu phục» (thắng một lần, không mất gì) thì «Hợp khế», chắc chắn thành công.",
+      "Thu nhận từ boss: hạ boss chỉ định rồi «Thu nhận».",
+      "Đã có: «Xuất chiến», «Nuôi» tăng thân thiết (linh thạch + Thú bì), «Tiến hóa» E2 ở thân thiết 20, E3 ở 40; linh thú khế ước phải qua thử thách Hộ chủ/Chân hình khi đang xuất chiến."
+    ],
+    "tips": [
+      "Thân thiết tối đa 40, lên 50 từ Không Huyền; không tụt khi nghỉ.",
+      "Nội tại chỉ tính cho con đang xuất chiến.",
+      "Giữ khế ấn dư để tiến hóa E3."
+    ],
+    "tabs": [
+      {
+        "name": "Đã có",
+        "summary": "Xuất chiến, nuôi, tiến hóa, đổi diện mạo."
+      },
+      {
+        "name": "Săn khế ước",
+        "summary": "Gom khế ấn và hợp khế."
+      },
+      {
+        "name": "Thu nhận từ boss",
+        "summary": "Linh thú nhận sau khi hạ boss."
+      }
+    ]
+  },
+  {
+    "page": "puppets",
+    "name": "Khôi lỗi",
+    "summary": "Con rối luyện từ linh hồn, xuất chiến cạnh linh thú và tự dùng kỹ năng; 14 bậc từ Nguyên Anh tới Đạp Thiên.",
+    "unlock": "Nguyên Anh Sơ kỳ",
+    "howTo": [
+      "Tab Khôi Hồn Lộ: bấm «Săn ở đây» ở bãi của bậc muốn luyện; săn tự động như bãi thường kể cả khi vắng mặt, rơi linh thạch và mảnh linh hồn (không rơi trang bị).",
+      "Đủ 60 mảnh linh hồn cùng bậc và đủ cảnh giới thì bấm «Luyện khôi lỗi» (mỗi con luyện một lần).",
+      "Mảnh thừa dùng để «Nâng kỹ năng» tới cấp 10: mỗi cấp +10% uy lực và −2% hồi chiêu, giá tăng dần (10 → 50 mảnh).",
+      "Bấm «Xuất chiến» một con; chỉ gọi ra được khi bạn đã tới đại cảnh giới của nó."
+    ],
+    "tips": [
+      "Bãi săn chỉ mở khi đã mở vùng của đại cảnh giới đó.",
+      "Chỉ số tính theo % chỉ số chủ, bậc càng cao càng mạnh."
+    ],
+    "tabs": [
+      {
+        "name": "Khôi lỗi",
+        "summary": "Luyện, nâng kỹ năng, xuất chiến."
+      },
+      {
+        "name": "Khôi Hồn Lộ",
+        "summary": "Chuỗi bãi săn mảnh linh hồn."
+      }
+    ]
+  },
+  {
+    "page": "map",
+    "name": "Bản đồ",
+    "summary": "Nơi chọn điểm săn để treo máy lấy tu vi, linh thạch, vật liệu, trang bị và khiêu chiến boss.",
+    "unlock": "Mở sẵn. Vùng mở dần theo cảnh giới và phải hạ boss vùng trước đó.",
+    "howTo": [
+      "Chọn vùng ở cột Hành trình, bấm \"Săn tại đây\". Nhân vật tự đánh theo luật xuất chiêu; mỗi chu kỳ là một trận: thắng có tu vi và chiến lợi phẩm, thua không có thưởng nhưng không mất gì.",
+      "\"Có thể rơi\" cho xem vật phẩm và tỉ lệ rơi.",
+      "Boss vùng: bấm \"Khiêu chiến\"; lần đầu hạ chắc chắn có thưởng, hạ xong xuất hiện lại sau 10–20 phút; thua không mất gì.",
+      "Hạ boss vùng rồi thì mở \"Bản Hung\" mạnh hơn, 3 lượt/ngày chung cho mọi boss."
+    ],
+    "tips": [
+      "Báo chưa thắng được điểm săn thì lùi điểm thấp hơn hoặc nâng trang bị, công pháp.",
+      "Hạ boss vùng được tính cho việc ngày và tuần."
+    ],
+    "tabs": [
+      {
+        "name": "Vùng săn",
+        "summary": "Vùng, điểm săn và boss vùng."
+      },
+      {
+        "name": "Boss bản đồ",
+        "summary": "12 boss gắn với vùng, từ Nguyên Anh Sơ kỳ; đánh lại sau 30 phút."
+      },
+      {
+        "name": "Khảo chứng",
+        "summary": "3 lượt/ngày, từ Trúc Cơ Sơ kỳ; thắng nhận tinh chất vùng và khoáng, thua không tốn lượt."
+      }
+    ]
+  },
+  {
+    "page": "secret",
+    "name": "Bí cảnh",
+    "summary": "Phó bản nhiều phòng đánh liên tiếp để lấy linh thạch, vật liệu, trang bị bí cảnh; kèm chọn thưởng Kỳ ngộ.",
+    "unlock": "Bí cảnh thường đầu tiên (Hàn Vụ Băng Khố) từ Trúc Cơ Hậu kỳ; Bí cảnh sáu phòng từ Nguyên Anh Sơ kỳ.",
+    "howTo": [
+      "Bí cảnh thường: \"Vào bí cảnh\" rồi \"Vào phòng đầu\". Sinh lực mang sang phòng sau; trước mỗi phòng chọn \"Nghỉ\" (+35% Sinh lực) hoặc \"Xông tiếp\" (thưởng phòng kế ×1,6). Thua giữ một nửa, \"Rời đi\" giữ đủ.",
+      "Kỳ ngộ đến khoảng mỗi 400 chu kỳ săn, giữ tối đa 3; bấm một lựa chọn để nhận thưởng.",
+      "Bí cảnh sáu phòng tốn 1 vé mỗi lần; thua hoặc bỏ dở được trả vé nhưng mất phần đang chờ."
+    ],
+    "tips": [
+      "Máu thấp thì Nghỉ hoặc Rời đi để giữ trọn thưởng.",
+      "Gom ấn bí cảnh để đổi đúng món trang bị cần."
+    ],
+    "tabs": [
+      {
+        "name": "Bí cảnh thường",
+        "summary": "Mỗi bí cảnh 2 lượt/ngày, 4–5 phòng, có ngả rẽ khó hơn thưởng cao hơn; kèm Kỳ ngộ."
+      },
+      {
+        "name": "Bí cảnh sáu phòng",
+        "summary": "+3 vé/ngày, tích tối đa 6; hoàn tất nhận ấn, tinh luyện thạch, tinh chất, có cơ hội rơi trang bị bộ."
+      }
+    ]
+  },
+  {
+    "page": "codex",
+    "name": "Đồ giám",
+    "summary": "Sổ tra cứu yêu thú, boss và vật phẩm: xem chỉ số, kỹ năng, nơi xuất hiện của quái và nơi kiếm từng vật phẩm.",
+    "unlock": "Mở sẵn; quái chỉ hiện thông tin khi vùng chứa nó đã mở (chưa mở thì hiện ???).",
+    "howTo": [
+      "Mục Yêu thú và boss: lọc Tất cả / Yêu thú / Boss, gõ tên để tìm, bấm một loài để xem chỉ số, kỹ năng và nơi xuất hiện.",
+      "Mục Vật phẩm và nơi kiếm: tìm vật phẩm để xem mô tả, số đang có, có giao dịch được không và kiếm ở đâu."
+    ],
+    "tips": [
+      "Trước khi đánh boss khó, xem kỹ năng của nó trong Đồ giám để chọn cách khắc chế.",
+      "Thiếu vật liệu nào thì tra ở mục Vật phẩm để biết nên đi săn hay làm hoạt động gì."
+    ],
+    "tabs": [
+      {
+        "name": "Yêu thú và boss",
+        "summary": "Danh sách quái theo cảnh giới, đếm số loài đã mở."
+      },
+      {
+        "name": "Vật phẩm và nơi kiếm",
+        "summary": "Mô tả và nguồn kiếm của từng vật phẩm."
+      }
+    ]
+  },
+  {
+    "page": "worldboss",
+    "name": "Boss chung",
+    "summary": "Boss mọi người cùng đánh chung một thanh Sinh lực; góp sát thương để nhận thưởng mốc, xếp hạng và thưởng hạ boss.",
+    "unlock": "Boss thế giới và boss bang từ Ngưng Khí tầng 10 (boss bang cần có bang hội); Boss canh giờ mặc định từ Trúc Cơ Sơ kỳ.",
+    "howTo": [
+      "Bấm \"Khiêu chiến\": mỗi lượt là trận tự động 45 giây, sát thương trừ vào Sinh lực chung; boss mạnh theo cảnh giới người đánh.",
+      "Mỗi ngày 3 lượt boss thế giới và 3 lượt riêng boss bang.",
+      "Đủ sát thương thì bấm \"Nhận\" ở Mốc cá nhân (2.000 / 30.000 / 300.000 / 3.000.000), mỗi mốc một lần mỗi kỳ. Boss bị hạ thì thưởng gửi thư cho mọi người góp sức."
+    ],
+    "tips": [
+      "Đánh hết lượt mỗi ngày để kịp đủ mốc trước khi boss đổi.",
+      "Boss canh giờ chỉ đánh được trong khung giờ."
+    ],
+    "tabs": [
+      {
+        "name": "Thế giới · đổi mỗi ngày",
+        "summary": "Boss toàn máy chủ, đổi mỗi ngày."
+      },
+      {
+        "name": "Canh giờ · Hư Ảnh Đại Năng",
+        "summary": "Mặc định 4 khung 08:00, 12:00, 19:00, 21:30 giờ Việt Nam, mỗi khung 60 phút, 3 lượt; mỗi lượt cho Điểm Thảo Phạt đổi ở cửa hàng; hạng 1 bảng tháng nhận skin có hạn."
+      },
+      {
+        "name": "Bang hội · đổi mỗi tuần",
+        "summary": "Boss riêng của bang, đổi mỗi tuần."
+      }
+    ]
+  },
+  {
+    "page": "quests",
+    "name": "Nhiệm vụ",
+    "summary": "Gom mọi loại nhiệm vụ: tuyến chính, chương truyện, việc ngày, việc tuần, thành tựu và lịch. Tab có số là đang có thưởng chờ nhận.",
+    "unlock": "Mở sẵn từ đầu.",
+    "howTo": [
+      "Đủ tiến độ thì bấm \"Nhận thưởng\"/\"Nhận\"; chưa bấm thì thưởng chưa vào túi.",
+      "Ở Nhiệm vụ chính, bấm \"Đi tới\" để mở đúng nơi cần làm.",
+      "Việc ngày làm mới lúc 00:00 giờ Việt Nam, việc tuần làm mới thứ Hai cùng giờ (giờ chính xác hiện trong tab)."
+    ],
+    "tips": [
+      "Cứ theo Nhiệm vụ chính là không lạc, nó dẫn qua từng bước đột phá.",
+      "Mỗi ngày chỉ nhận 4 trong 6 việc, chọn việc dễ nhất.",
+      "Mới vào game thì xem Lịch & việc nên làm để biết còn gì chưa nhận."
+    ],
+    "tabs": [
+      {
+        "name": "Nhiệm vụ chính",
+        "summary": "40 nhiệm vụ nối tiếp trong 4 chương (Nhập đạo, Tông môn, Ngộ đạo, Đạp Thiên); xong cái trước mới mở cái sau."
+      },
+      {
+        "name": "Chương truyện",
+        "summary": "Chương Phá Đan Thành Anh mở ở Kết Đan Viên mãn, phải xong mới vào thử thách đột phá Nguyên Anh; các chương sau mở từ Hóa Thần Sơ kỳ tới Đạp Thiên. Mỗi chương: hai hồi truyện, một trận tâm cảnh (thua không mất gì), chọn nhánh; nhánh nào cũng có cảm ngộ và mảnh bản nguyên. Sau 24 giờ có thể Hồi tưởng nhánh kia bằng linh thạch, không nhận lại thưởng."
+      },
+      {
+        "name": "Hằng ngày",
+        "summary": "6 việc, nhận tối đa 4 việc/ngày; thưởng linh thạch theo cảnh giới, thêm cống hiến nếu ở tông môn."
+      },
+      {
+        "name": "Hằng tuần",
+        "summary": "3 việc: thắng 2.500 chu kỳ săn, hạ 5 boss vùng, 8 lần chế tạo; thưởng linh thạch và đan dược."
+      },
+      {
+        "name": "Thành tựu",
+        "summary": "Mốc tích lũy lâu dài, mỗi mốc nhận linh thạch một lần."
+      },
+      {
+        "name": "Lịch & việc nên làm",
+        "summary": "Việc đang chờ (thư có quà, mục nhận được, đủ tu vi đột phá…) kèm nút Đi tới; giờ reset, boss chung hôm nay, giờ trận Chiến Tuyến, Hành Trình Nghịch Mệnh."
+      }
+    ]
+  },
+  {
+    "page": "journey",
+    "name": "Hành trình",
+    "summary": "Xem tuyến các truyện của game (Tiên Nghịch → Cầu Ma → các truyện sau) và mở cổng để tách phân thân sang kiếp Cầu Ma.",
+    "unlock": "Trang xem được từ đầu; cổng Cầu Ma mở khi đạt Đạp Thiên và xong chương truyện Tiên Nghịch thứ 16 (Một Bước Không Mượn Trời).",
+    "howTo": [
+      "Kiểm tra hai điều kiện ở khung Cổng Cầu Ma (có dấu ✓ là đạt).",
+      "Bấm \"Tách phân thân sang Cầu Ma\" (lần sau là \"Sang phân thân Cầu Ma\"), đọc bảng xác nhận rồi bấm \"Mở cổng\".",
+      "Đang ở Cầu Ma thì bấm \"Trở về Tiên Nghịch\" lúc nào cũng được."
+    ],
+    "tips": [
+      "Nhận hết thưởng nhiệm vụ Tiên Nghịch trước khi sang, bảng xác nhận sẽ nhắc số nhiệm vụ chờ nhận.",
+      "Khi ở Cầu Ma, Tiên Nghịch không tích treo máy, chỉ mẻ lò đã bắt đầu vẫn chạy theo giờ thật."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "cau_ma",
+    "name": "Cầu Ma",
+    "summary": "Kiếp thứ hai của nhân vật: một phân thân tu lại từ đầu theo hệ Cầu Ma (Ngưng Huyết, huyết tuyến, Man Văn), có ví, túi, tiến trình, bộ lạc, chợ, luận bàn và bảng xếp hạng riêng.",
+    "unlock": "Vào từ Hành trình khi đạt Đạp Thiên và xong chương truyện Tiên Nghịch thứ 16.",
+    "howTo": [
+      "Lần đầu sang, phân thân bắt đầu ở Ngưng Huyết tầng 1 với 3 huyết tuyến và bộ khởi đầu riêng (phát một lần). Tài sản Tiên Nghịch giữ nguyên nhưng không dùng được bên Cầu Ma; tiền ở đây là thạch tệ, không chuyển qua lại.",
+      "Hoạt động chính: Chuyên tu khí huyết, Hái dược Ô Long Sơn, Săn thú rừng, Đào khoáng Hắc Viêm Phong (mở ở chương 2). Mưa 15 phút đầu mỗi giờ, hái dược lúc mưa có thể gặp Ô Long Tiên.",
+      "Nhiệm vụ chính: làm lần lượt 6 nhiệm vụ Ô Sơn, rồi đi các chương sau; chương mở theo chương trước, số huyết tuyến hoặc cảnh giới, chương xa còn che bằng ???.",
+      "Hằng ngày, Hằng tuần, Thành tựu giống Tiên Nghịch (6 việc, nhận 4 mỗi ngày) nhưng thưởng thạch tệ, việc tuần thêm 2 Sơn Linh Dược; vài việc đổi tên như \"Làm 1 việc sư môn\", \"Thắng 1 trận có boss\". Tab Chương truyện được thay bằng Nhật ký & chứng cứ.",
+      "Bấm \"Trở về Tiên Nghịch\" ở góc trên để quay về; tiến trình được giữ nguyên."
+    ],
+    "tips": [
+      "Hai kiếp không cùng treo máy: đang ở bên nào thì chỉ bên đó tích tu luyện.",
+      "Lượt thử luyện được cộng 3 mỗi ngày, tích tối đa 6; đầy thì vào Bí cảnh dùng kẻo phí.",
+      "Canh giờ mưa để hái dược lấy Ô Long Tiên."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "sect",
+    "name": "Tông môn",
+    "summary": "Bái nhập một trong năm tông môn NPC để được truyền công pháp, kiếm cống hiến, thăng chức vị và dự đại hội tỉ võ.",
+    "unlock": "Bái nhập từ Trúc Cơ Sơ kỳ.",
+    "howTo": [
+      "Sơn môn: chọn một trong năm tông môn (Thanh Vân Kiếm Các, Lôi Đình Cốc, Thiết Sơn Môn, Hồn Đăng Các, Cấm Văn Sơn Trang), bấm Bái nhập.",
+      "Quyên góp vật liệu lấy cống hiến (tối đa 400/ngày), rồi bấm Học công pháp; học xong vào Bộ kỹ năng để lắp.",
+      "Chức vị Ngoại môn → Nội môn (600) → Chân truyền (3.000) tính theo tổng cống hiến đã kiếm."
+    ],
+    "tips": [
+      "Rời tông môn giữ kỹ năng nhưng mất cống hiến chưa tiêu và chờ 24 giờ mới vào nơi khác."
+    ],
+    "tabs": [
+      {
+        "name": "Sơn môn",
+        "summary": "Bái nhập, chức vị, học công pháp, quyên góp."
+      },
+      {
+        "name": "Tỉ võ",
+        "summary": "Khiêu chiến người phe khác bằng bộ PvP, 5 lượt/ngày (thắng +15, thua +5 cống hiến). Tự đánh đủ 3 lượt/tuần để nhận thưởng theo hạng phe qua Thư (chốt sáng thứ Hai). Chưa vào tông môn thì đấu cho phe Tán tu."
+      },
+      {
+        "name": "Việc & cửa hàng",
+        "summary": "3 việc tông môn mỗi ngày thưởng cống hiến; đổi cống hiến lấy đan, vật liệu (giới hạn tuần, làm mới thứ Hai)."
+      }
+    ]
+  },
+  {
+    "page": "npc",
+    "name": "Đạo hữu",
+    "summary": "Kết giao đạo hữu NPC: trò chuyện, tặng quà tăng thiện cảm, nhận quà đáp lễ, nhiệm vụ riêng, trợ chiến; lập đạo lữ / kết nghĩa với người chơi.",
+    "unlock": "Mở sẵn (tab cạnh Tông môn); mỗi đạo hữu có cảnh giới gặp được riêng.",
+    "howTo": [
+      "Trò chuyện mỗi vị 1 lần/ngày: +8 thiện cảm.",
+      "Tặng vật liệu thường: +5 mỗi món, món Hợp ý +10; tối đa 30 điểm quà mỗi vị, 60 điểm cho tất cả mỗi ngày.",
+      "Đạt mốc 100/250/450/700/1000 thiện cảm thì Nhận quà đáp lễ."
+    ],
+    "tips": [
+      "Thiện cảm không cộng chỉ số; nó mở lời thoại, quà đáp lễ và trợ chiến."
+    ],
+    "tabs": [
+      {
+        "name": "Trò chuyện & quà",
+        "summary": "Trò chuyện, tặng quà, nhận quà đáp lễ; ghim tối đa 3 vị."
+      },
+      {
+        "name": "Nhiệm vụ riêng",
+        "summary": "Mỗi vị 3 nhiệm vụ, xong lần đầu +100/150/200 thiện cảm; thua không mất gì."
+      },
+      {
+        "name": "Trợ chiến",
+        "summary": "Chọn một đạo hữu làm bóng trợ chiến; mở sau chương Phá Đan Thành Anh, cần đủ thiện cảm."
+      },
+      {
+        "name": "Đạo lữ & kết nghĩa",
+        "summary": "Lập khế với bạn bè: cả hai từ Nguyên Anh Sơ kỳ, đã là bạn 3 ngày; mỗi bên tự ký và nộp lễ (linh thạch + Khế Ước Đồng Tâm Hạp)."
+      }
+    ]
+  },
+  {
+    "page": "guild",
+    "name": "Bang hội",
+    "summary": "Bang hội do người chơi lập: quỹ chung, nghiên cứu cho cả bang, kỹ năng bang, chợ bang, nhiệm vụ chung và chiến bang.",
+    "unlock": "Xin vào bang không cần cảnh giới; lập bang cần Trúc Cơ Sơ kỳ và 5.000 linh thạch.",
+    "howTo": [
+      "Chưa có bang: bấm Xin vào và chờ bang chủ / trưởng lão duyệt, hoặc Lập bang (tên 2–16 ký tự, chỉ chữ và số).",
+      "Điểm danh mỗi ngày: +20 điểm đóng góp, +2.000 linh thạch vào quỹ.",
+      "Góp linh thạch vào quỹ (tối đa 50.000/ngày) để nâng cấp bang và nghiên cứu (+1% công hoặc sinh lực mỗi cấp cho cả bang).",
+      "Điểm đóng góp dùng nâng Kỹ năng bang và đổi đồ ở Chợ bang (giới hạn tuần)."
+    ],
+    "tips": [
+      "Rời bang mất điểm đóng góp chưa dùng; bang còn người thì bang chủ phải nhường chức mới rời được.",
+      "Bang cấp 1 tối đa 30 người, mỗi cấp +2 chỗ (tối đa cấp 10)."
+    ],
+    "tabs": [
+      {
+        "name": "Bang hội",
+        "summary": "Tổng quan, Thành viên, Quỹ và nghiên cứu, Kỹ năng bang, Chợ bang, Tông môn chiến (cần Âm Hư)."
+      },
+      {
+        "name": "Nhiệm vụ bang",
+        "summary": "Mục tiêu tuần trên tổng cả bang (hạ 30 boss, thắng 20.000 chu kỳ săn); đạt thì mỗi người tự Nhận 3.000 linh thạch."
+      }
+    ]
+  },
+  {
+    "page": "social",
+    "name": "Bạn bè",
+    "summary": "Quản lý danh sách bạn bè, lời mời kết bạn và danh sách người đã chặn.",
+    "unlock": null,
+    "howTo": [
+      "Nhập đúng đạo danh rồi bấm Gửi lời mời; hoặc bấm tên người chơi ở Xếp hạng / khung chat để xem hồ sơ và kết bạn.",
+      "Lời mời đến hiện ở đầu danh sách: bấm Nhận hoặc Từ chối; lời mời mình đã gửi có thể Hủy lời mời.",
+      "Bấm Xóa để bỏ một người bạn; mục Đã chặn cho phép Bỏ chặn."
+    ],
+    "tips": [
+      "Đạo lữ và kết nghĩa (tab Đạo hữu) cần hai người đã là bạn 3 ngày.",
+      "Hai người cùng gửi lời mời cho nhau thì tự thành bạn.",
+      "Chặn người khác bằng nút chặn cạnh tin nhắn trong khung chat."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "gw2",
+    "name": "Chiến Tuyến",
+    "summary": "Vấn Đạo Chiến Tuyến: bang đấu bang theo trận; máy chủ tự đánh từng cặp bằng cấu hình PvP, không cần online.",
+    "unlock": "Phải ở trong bang hội. Thành viên hợp lệ cần từ Nguyên Anh Sơ kỳ và đã ở bang ít nhất 48 giờ; bang cần ít nhất 5 thành viên hợp lệ để đăng ký.",
+    "howTo": [
+      "Mỗi ngày 3 trận lúc 09:00, 18:00 và 22:00 (giờ Việt Nam).",
+      "Bang chủ hoặc trưởng lão bấm Đăng ký cho trận kế tiếp và sắp đội hình (20 người đầu ra trận, sau là dự bị), rồi Lưu đội hình; không sắp thì xếp theo cấp rồi lực chiến.",
+      "Người thứ 1 đấu người thứ 1 của bang kia, thứ 2 đấu thứ 2…; bang thắng nhiều cặp hơn thắng trận.",
+      "Xem Lịch sử của bang → Chi tiết để xem lại từng cặp."
+    ],
+    "tips": [
+      "Mỗi người ra trận nhận huy hiệu Chiến Tuyến qua Thư: thắng 20, hòa 15, thua 10; bang thắng từ trận thứ 3 liên tiếp được thêm 5 mỗi người.",
+      "Chỉnh bộ kỹ năng PvP trước giờ trận.",
+      "Bảng xếp hạng 30 ngày: thắng 3 điểm, hòa 1 điểm."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "arena",
+    "name": "Đấu trường",
+    "summary": "Đấu PvP xếp hạng theo mùa (mỗi tháng): cấu hình PvP của bạn đấu cấu hình PvP của đối thủ, máy chủ tự mô phỏng, đối thủ không cần online.",
+    "unlock": "Từ Ngưng Khí tầng 10 (tự ghi danh khi mở Đấu trường).",
+    "howTo": [
+      "Danh sách hiện 5 đối thủ gần điểm bạn; bấm Làm mới đối thủ để rút 5 người khác trong 20 người gần điểm nhất.",
+      "Đấu hạng: 10 lượt/ngày, chỉ với người cùng nhóm cảnh giới (Ngưng Khí–Trúc Cơ, Kết Đan–Nguyên Anh, Hóa Thần–Vấn Đỉnh, Âm Hư trở lên); thắng +10, không thắng +4 điểm đấu trường.",
+      "Luận bàn: đánh thử với bất kỳ ai, không đổi điểm, không mất gì.",
+      "Dùng điểm đấu trường đổi đan, vật liệu, phù / trận ở cửa hàng bên dưới (nhiều món giới hạn tuần, mở lại thứ Hai)."
+    ],
+    "tips": [
+      "Điểm hạng khởi đầu 1000; đầu mỗi tháng điểm bị kéo một nửa về 1000 và thưởng mùa (theo mốc 1050 / 1200 / 1400 / 1600 điểm) gửi qua Thư.",
+      "Hết giờ trận tính là bên tấn công không thắng.",
+      "Chỉnh bộ kỹ năng PvP trước khi đấu."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "market",
+    "name": "Chợ",
+    "summary": "Chợ giữa người chơi: mua bán trang bị và vật liệu bằng linh thạch.",
+    "unlock": "Đăng bán từ Ngưng Khí tầng 8.",
+    "howTo": [
+      "Tab Mua: tìm theo tên, lọc loại, phẩm chất, cảnh giới, vị trí, giá tối đa rồi bấm Mua.",
+      "Tab Đăng bán: chọn món trong túi, nhập giá (vật liệu là giá cả lô) rồi bấm Đăng bán; món rời túi ngay.",
+      "Tab Hàng của tôi: xem trạng thái và Hủy món đang bán; tab Đã mua: các món đã mua.",
+      "Bán được thì tiền (đã trừ phí 5%) gửi về Thư; quá 48 giờ chưa bán thì hàng trả lại qua Thư."
+    ],
+    "tips": [
+      "Đồ đang mặc, đồ đã khóa, vật phẩm đột phá và vật liệu boss không bán được.",
+      "Mỗi món có giá tối thiểu / tối đa; bấm Đặt bằng mức này để điền nhanh giá tối thiểu.",
+      "Nếu đầu chợ ghi nhóm cảnh giới, bạn chỉ mua được hàng của người cùng nhóm; nút Hạ giới (nếu có) mở thêm vài giờ với nhóm dưới."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "auction",
+    "name": "Đấu giá",
+    "summary": "Phòng đấu giá bằng linh thạch: đăng lô vật phẩm hoặc trang bị, người chơi trả giá, không có mua đứt.",
+    "unlock": "Từ Kết Đan Sơ kỳ (cả đăng lô lẫn đặt giá).",
+    "howTo": [
+      "Tab Đang đấu: lọc Vật phẩm / Trang bị, nhập mức rồi bấm Đặt giá; lần đầu tối thiểu bằng giá mở, sau đó cao hơn giá hiện tại ít nhất 5%.",
+      "Đặt giá là giữ ngay số linh thạch; bị người khác vượt thì tiền được trả lại qua Thư.",
+      "Tab Đăng lô: chọn món, giá mở (tối thiểu 20), thời hạn 12 hoặc 24 giờ; phí đăng 1% giá mở, không hoàn.",
+      "Tab Của tôi: lô mình đăng hoặc đã đặt; chỉ hủy được lô chưa ai đặt giá."
+    ],
+    "tips": [
+      "Đặt giá trong 120 giây cuối sẽ lùi giờ đóng, cộng dồn tối đa 10 phút so với giờ đóng ban đầu.",
+      "Người thắng nhận hàng qua Thư; người bán nhận giá chốt trừ 5% phí.",
+      "Không ai đặt giá thì hàng trả về qua Thư, phí đăng không hoàn."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "mail",
+    "name": "Thư",
+    "summary": "Hộp thư nhận quà và thông báo: tiền bán ở chợ, hàng hết hạn, thưởng đấu trường, boss chung, tông môn, hoạt động, giftcode và quà vận hành.",
+    "unlock": null,
+    "howTo": [
+      "Chọn một thư bên trái để đọc; bấm Nhận quà, hoặc Nhận tất cả để lấy quà của mọi thư.",
+      "Thư đã nhận quà hoặc không có quà thì bấm Xóa thư."
+    ],
+    "tips": [
+      "Thư tự hết hạn sau 30 ngày kể từ lúc gửi (thời gian còn lại ghi trong thư) — quà chưa nhận sẽ mất, nên nhận sớm.",
+      "Tiêu đề Hộp thư hiện số thư còn quà chưa nhận."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "ranking",
+    "name": "Xếp hạng",
+    "summary": "Bảng xếp hạng lấy trực tiếp từ máy chủ, hiện 50 hạng đầu.",
+    "unlock": null,
+    "howTo": [
+      "Chọn bảng: Cảnh giới, Lực chiến, Hạ boss, Thành tựu, Đấu trường hoặc Bang hội.",
+      "Lọc theo cảnh giới (bảng Đấu trường lọc theo nhóm cảnh giới) để xem bảng vừa sức.",
+      "Bấm tên người chơi để xem hồ sơ và luận bàn."
+    ],
+    "tips": [
+      "Nếu có tên bạn trong bảng, dòng \"Bạn đang ở hạng…\" hiện ngay dưới bục top 3.",
+      "Nếu thấy dòng \"Chỉ hiện đạo hữu chênh không quá 1 đại cảnh giới với bạn\" thì bảng đang giới hạn theo cảnh giới."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "event",
+    "name": "Hoạt động",
+    "summary": "Các hoạt động giới hạn và thường trực (Hành Trình Nghịch Mệnh, Chu Tước Hồng Liên, Huyễn Kính Vấn Tâm, Vân Hải Hộ Đạo, Đan Hội Vân Tông, Thiên Cơ Bảo Luân…), mở bằng các nút ở góc trên bên phải màn chơi.",
+    "unlock": "Từ Trúc Cơ Sơ kỳ; Đan Hội Vân Tông từ Nguyên Anh Sơ kỳ. Nút chỉ hiện khi hoạt động sắp mở, đang mở hoặc đang đổi thưởng.",
+    "howTo": [
+      "Bấm nút hoạt động ở góc trên (chấm đỏ = còn thưởng chờ nhận) để mở thẳng màn của hoạt động đó.",
+      "Mỗi hoạt động có thời gian kiếm điểm, sau đó 7 ngày chỉ đổi thưởng; dùng điểm đổi skin và đồ ở cửa hàng của hoạt động.",
+      "Lượt miễn phí cấp mỗi ngày từ ngày bạn tham gia, để dành được tới hết hoạt động; lượt phụ (nếu có) 1 lần mỗi ngày, trả linh thạch."
+    ],
+    "tips": [
+      "Thua không mất tu vi hay vật liệu.",
+      "Điểm và phần thưởng hoạt động đều khóa giao dịch; điểm giữ sang lần mở lại cùng hoạt động.",
+      "Thiên Cơ Bảo Luân: 500 linh thạch mỗi lượt, +1 Bảo Ấn; 500 Bảo Ấn đổi một skin tự chọn."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "season",
+    "name": "Lễ hội",
+    "summary": "Lễ hội theo mùa: làm việc lễ hội mỗi ngày để nhận lễ phù, rồi đổi lễ phù lấy đan và vật liệu.",
+    "unlock": "Chỉ có trong mùa lễ hội; khi đó nút lễ hội hiện ở góc trên màn chơi.",
+    "howTo": [
+      "Làm các việc lễ hội trong ngày (thắng chu kỳ săn, thu thập, hạ boss, chế tạo hoặc cường hóa tùy lễ) rồi bấm Nhận để lấy lễ phù.",
+      "Ở mục Đổi lễ phù, đổi lấy Tụ Linh Đan, Đại Tụ Linh Đan và vật liệu; mỗi món có giới hạn trong mùa."
+    ],
+    "tips": [
+      "Lịch hằng năm: Xuân Linh Hội 20/1–20/2, Hạ Chí Lôi Tiết 10/6–10/7, Vọng Nguyệt Tiết 15/9–25/10, Đông Chí Tuyết Tế 10/12–5/1.",
+      "Lễ phù dư được giữ lại cho mùa sau.",
+      "Việc lễ hội làm mới mỗi ngày nên ghé đều để không bỏ lỡ."
+    ],
+    "tabs": []
+  },
+  {
+    "page": "settings",
+    "name": "Cài đặt",
+    "summary": "Chỉnh hiển thị, âm thanh, tu luyện tự động, nhân vật, giftcode, liên kết Discord và bảo mật tài khoản.",
+    "unlock": null,
+    "howTo": [
+      "Tu luyện: bật \"Tự lên tiểu tầng khi đủ tu vi (kể cả khi vắng mặt)\"; chỉ áp dụng tầng không tốn vật liệu, đại cảnh giới vẫn phải tự xác nhận.",
+      "Tự xử lý trang bị rơi khi săn: chọn mức phẩm và phân giải hay bán; đồ trong túi, đồ đang mặc không bị đụng.",
+      "Mục Ngoại hình có nút Đọc lại hướng dẫn nhập môn.",
+      "Giftcode: nhập mã, quà vào Thư; phần lớn mã cần liên kết Discord (Lấy mã liên kết, gõ /lienket trong server Discord).",
+      "Tài khoản: nhập mật khẩu hiện tại để Tạo mã khôi phục mới (thay mã cũ); đăng xuất thiết bị khác."
+    ],
+    "tips": [
+      "Game không thu email: quên mật khẩu thì ở màn đăng nhập bấm \"Quên mật khẩu?\", nhập tên đăng nhập, mã khôi phục 20 ký tự và mật khẩu mới.",
+      "Mã khôi phục chỉ hiện một lần, không ai xem lại được — lưu ở nơi an toàn.",
+      "Mỗi tài khoản tối đa 2 nhân vật, chuyển qua lại trong Cài đặt."
+    ],
+    "tabs": []
+  }
+]

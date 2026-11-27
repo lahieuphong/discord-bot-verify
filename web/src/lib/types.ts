@@ -138,3 +138,42 @@ export type GeminiKeyCheck =
       ok: false;
       error: { kind: GeminiErrorKind; status: number | null; message: string };
     };
+
+/** JSON of GET /export-excel/api/assistant (src/export/assistant-admin.controller.ts). */
+export interface AssistantSource {
+  id: string;
+  title: string;
+  summary: string;
+  origin: 'wiki' | 'game';
+  characters: number;
+  lines: number;
+}
+
+export interface AssistantOverview {
+  model: string;
+  keyConfigured: boolean;
+  maxOutputTokens: number;
+  maxQuestionLength: number;
+  persona: string;
+  guidance: string;
+  systemCharacters: number;
+  gameKnowledgeGeneratedAt: string;
+  sources: AssistantSource[];
+}
+
+export interface AssistantTokenCounts {
+  total: number;
+  sections: Record<string, number>;
+}
+
+export interface AssistantTestAnswer {
+  answer: string;
+  model: string;
+  usage: {
+    inputTokens: number | null;
+    outputTokens: number | null;
+    totalTokens: number | null;
+  };
+  durationMs: number;
+  discordMessages: number;
+}

@@ -12,6 +12,7 @@ import { GeminiService, keyFingerprint, maskKey } from './gemini.service.js';
 const genai = vi.hoisted(() => ({
   generateContent: vi.fn(),
   get: vi.fn(),
+  countTokens: vi.fn(),
   keys: [] as string[],
 }));
 
@@ -20,6 +21,7 @@ vi.mock('@google/genai', () => ({
     readonly models = {
       generateContent: genai.generateContent,
       get: genai.get,
+      countTokens: genai.countTokens,
     };
     constructor({ apiKey }: { apiKey: string }) {
       genai.keys.push(apiKey);
@@ -238,6 +240,32 @@ describe('GeminiService', () => {
       GEMINI_LIMIT_RPM: '0',
       GEMINI_LIMIT_TPM: '250000',
     });
+  });
+
+  it('counts tokens once per text and caches the result', async () => {
+    const { service } = createService();
+    genai.countTokens.mockResolvedValue({ totalTokens: 42 });
+
+    await expect(service.countTokens({ a: 'one', b: 'two' })).resolves.toEqual({
+      a: 42,
+      b: 42,
+    });
+    await service.countTokens({ a: 'one' });
+
+    expect(genai.countTokens).toHaveBeenCalledTimes(2);
+  });
+
+  it('sends the knowledge-based system instruction', async () => {
+    const { service } = createService();
+    genai.generateContent.mockResolvedValue({ text: 'ok' });
+
+    await service.ask('hi', { source: 'admin', requester: 'admin' });
+
+    const request = genai.generateContent.mock.calls[0]?.[0] as {
+      config: { systemInstruction: string; maxOutputTokens: number };
+    };
+    expect(request.config.systemInstruction).toContain('# Nhiệm vụ trong game');
+    expect(request.config.maxOutputTokens).toBe(1200);
   });
 
   it('reports a missing key on check', async () => {

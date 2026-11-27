@@ -1,7 +1,6 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { MAX_QUESTION_LENGTH } from '../gemini/knowledge/knowledge.js';
 import { GeminiService, type GeminiAnswer } from '../gemini/gemini.service.js';
-
-const MAX_QUESTION_LENGTH = 4_000;
 
 @Controller()
 export class QuestionController {

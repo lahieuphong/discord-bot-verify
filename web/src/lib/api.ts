@@ -1,4 +1,7 @@
 import type {
+  AssistantOverview,
+  AssistantTestAnswer,
+  AssistantTokenCounts,
   GeminiKeyCheck,
   GeminiKeyInfo,
   GeminiLimits,
@@ -67,6 +70,18 @@ export const api = {
     request<GeminiKeyInfo>('/api/gemini/key', {
       method: 'PUT',
       body: JSON.stringify({ apiKey }),
+    }),
+  assistant: () => request<AssistantOverview>('/api/assistant'),
+  assistantSource: (id: string) =>
+    request<{ id: string; content: string }>(
+      `/api/assistant/sources/${encodeURIComponent(id)}`,
+    ),
+  assistantTokens: () =>
+    request<AssistantTokenCounts>('/api/assistant/tokens', { method: 'POST' }),
+  askAssistant: (question: string) =>
+    request<AssistantTestAnswer>('/api/assistant/ask', {
+      method: 'POST',
+      body: JSON.stringify({ question }),
     }),
   updateGeminiLimits: (limits: GeminiLimits) =>
     request<GeminiLimits>('/api/gemini/limits', {

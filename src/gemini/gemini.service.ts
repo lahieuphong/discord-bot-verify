@@ -10,8 +10,11 @@ import { ConfigService } from '@nestjs/config';
 import { GoogleGenAI } from '@google/genai';
 import type { EnvironmentVariables } from '../config/environment.js';
 import { updateEnvFile } from '../config/env-file.js';
-import { INSTRUCTION_PROMPT } from '../config/utils/const.js';
 import { LiveUpdatesService } from '../live/live-updates.service.js';
+import {
+  MAX_OUTPUT_TOKENS,
+  SYSTEM_INSTRUCTION,
+} from './knowledge/knowledge.js';
 import {
   describeGeminiError,
   EmptyGeminiAnswerError,
@@ -76,6 +79,7 @@ export class GeminiService {
   private client: GoogleGenAI | null;
   private keyChangedAt: Date | null = null;
   private limits: GeminiLimits;
+  private readonly tokenCache = new Map<string, number>();
 
   constructor(
     private readonly configService: ConfigService<EnvironmentVariables, true>,
@@ -119,8 +123,8 @@ export class GeminiService {
         model: this.model,
         contents: question,
         config: {
-          maxOutputTokens: 1_200,
-          systemInstruction: INSTRUCTION_PROMPT,
+          maxOutputTokens: MAX_OUTPUT_TOKENS,
+          systemInstruction: SYSTEM_INSTRUCTION,
         },
       });
       const usage = {
@@ -252,6 +256,49 @@ export class GeminiService {
     );
     this.liveUpdatesService.notify('gemini-settings');
     return this.getLimits();
+  }
+
+  /**
+   * Counts the tokens of each text with Google's countTokens (free, uses no
+   * generation quota). Results are cached per key, model and text.
+   */
+  async countTokens(
+    texts: Record<string, string>,
+  ): Promise<Record<string, number>> {
+    const client = this.client;
+    const apiKey = this.apiKey;
+
+    if (!client || !apiKey) {
+      throw new ServiceUnavailableException('Chưa có GEMINI_API_KEY.');
+    }
+
+    const counts: Record<string, number> = {};
+
+    try {
+      for (const [id, text] of Object.entries(texts)) {
+        const cacheKey = `${keyFingerprint(apiKey)}:${this.model}:${createHash('sha256').update(text).digest('hex')}`;
+        let total = this.tokenCache.get(cacheKey);
+
+        if (total === undefined) {
+          const result = await client.models.countTokens({
+            model: this.model,
+            contents: text,
+          });
+          total = result.totalTokens ?? 0;
+          this.tokenCache.set(cacheKey, total);
+        }
+
+        counts[id] = total;
+      }
+    } catch (error) {
+      const info = describeGeminiError(error);
+      this.logger.warn(`Gemini countTokens failed: ${info.message}`);
+      throw new ServiceUnavailableException(
+        `Google không đếm được token: ${info.message}`,
+      );
+    }
+
+    return counts;
   }
 
   private async probe(apiKey: string): Promise<GeminiKeyCheck> {

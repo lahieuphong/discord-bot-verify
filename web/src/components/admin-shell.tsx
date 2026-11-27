@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AppHeader, type Tab } from '@/components/app-header';
+import { AssistantPage } from '@/components/assistant/assistant-page';
 import { Dashboard } from '@/components/dashboard';
 import { GeminiPage } from '@/components/gemini/gemini-page';
 import { Toaster } from '@/components/ui/sonner';
@@ -9,6 +10,7 @@ import { useLiveUpdates } from '@/lib/live';
 const TAB_HASH: Record<Tab, string> = {
   members: '#/thanh-vien',
   gemini: '#/gemini',
+  assistant: '#/tro-ly-ai',
 };
 
 function tabFromHash(): Tab {
@@ -19,8 +21,11 @@ function tabFromHash(): Tab {
   );
 }
 
+/** Tabs that reload on live changes. */
+type LiveTab = 'members' | 'gemini';
+
 /** Which tab reloads for a live change (null reason = both). */
-function tabOfReason(reason: string | null): Tab | null {
+function tabOfReason(reason: string | null): LiveTab | null {
   if (reason === null) return null;
   return reason.startsWith('gemini-') ? 'gemini' : 'members';
 }
@@ -35,7 +40,7 @@ export function AdminShell({
 }) {
   const [tab, setTab] = useState<Tab>(tabFromHash);
   // Bumped when the server reports a change for that tab.
-  const [signals, setSignals] = useState<Record<Tab, number>>({
+  const [signals, setSignals] = useState<Record<LiveTab, number>>({
     members: 0,
     gemini: 0,
   });
@@ -78,19 +83,21 @@ export function AdminShell({
         onTabChange={changeTab}
         onLogout={() => void logout()}
       />
-      {tab === 'members' ? (
+      {tab === 'members' && (
         <Dashboard
           liveMode={liveMode}
           refreshSignal={signals.members}
           onSessionEnded={onSessionEnded}
         />
-      ) : (
+      )}
+      {tab === 'gemini' && (
         <GeminiPage
           liveMode={liveMode}
           refreshSignal={signals.gemini}
           onSessionEnded={onSessionEnded}
         />
       )}
+      {tab === 'assistant' && <AssistantPage onSessionEnded={onSessionEnded} />}
     </div>
   );
 }

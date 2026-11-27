@@ -18,7 +18,8 @@ const RETENTION_DAYS = 180;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const RECENT_LIMIT = 20;
 
-export type GeminiSource = 'discord' | 'http';
+/** Where a question came from; `admin` = "Hỏi thử" on the admin page. */
+export type GeminiSource = 'discord' | 'http' | 'admin';
 
 export interface GeminiUsageEntry {
   keyFingerprint: string;
