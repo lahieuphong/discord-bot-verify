@@ -383,12 +383,10 @@ describe('UserVerificationService', () => {
       },
     );
 
-    it.each([
-      'user-verification:start:guild-id:another-user-id',
-      'user-verification:start',
-      'email-verification:start',
-    ])(
-      'opens the form for the clicker on an older prompt bound to someone else: %s',
+    // Prompts bound to another member are rejected (see the tests below);
+    // these older button IDs carry no member and open the clicker's form.
+    it.each(['user-verification:start', 'email-verification:start'])(
+      'opens the form for the clicker on an older unbound button: %s',
       async (customId) => {
         const { service } = createService();
         const { interaction, showModal, reply } = createPanelClick(
@@ -427,6 +425,7 @@ describe('UserVerificationService', () => {
       const { interaction, showModal, reply } = createPanelClick(
         false,
         PANEL_BUTTON_ID,
+        [],
         ['another-user-id'],
       );
 

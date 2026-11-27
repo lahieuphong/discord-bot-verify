@@ -12,7 +12,6 @@ import {
   GatewayIntentBits,
   MessageFlags,
   Options,
-  Partials,
   REST,
   RESTEvents,
   Routes,
@@ -25,6 +24,10 @@ import { GeminiService } from '../gemini/gemini.service.js';
 import { LiveUpdatesService } from '../live/live-updates.service.js';
 import { UserVerificationService } from '../verification/user-verification.service.js';
 import { splitDiscordMarkdown } from './discord-markdown.js';
+import { MemberRefreshGate } from './member-refresh.js';
+
+/** At most one full member refresh per guild in this window. */
+const MEMBER_REFRESH_COOLDOWN_MS = 60_000;
 
 export interface DiscordPingResponse {
   status: 'online' | 'offline' | 'disabled';
@@ -42,10 +45,15 @@ export interface DiscordPingResponse {
 export class DiscordService
   implements OnApplicationBootstrap, OnApplicationShutdown {
   private readonly logger = new Logger(DiscordService.name);
+  private readonly memberRefreshGate = new MemberRefreshGate(
+    MEMBER_REFRESH_COOLDOWN_MS,
+  );
   private readonly client = new Client({
+    // Members are not capped: the admin page and the verification scan need
+    // every member, and a capped cache would force a full (rate-limited)
+    // member request on every page load.
     makeCache: Options.cacheWithLimits({
       MessageManager: 50,
-      GuildMemberManager: 100,
     }),
     intents: [
       GatewayIntentBits.Guilds,
@@ -192,11 +200,15 @@ export class DiscordService
     // The GuildMembers intent keeps the cache up to date after the startup
     // scan; only ask Discord again if the cache is clearly incomplete.
     if (guild.members.cache.size < guild.memberCount) {
-      await guild.members.fetch().catch((error: unknown) => {
-        this.logger.warn(
-          `Could not refresh members of guild ${guildId}; using the cache: ${String(error)}`,
-        );
-      });
+      await this.memberRefreshGate
+        .run(guildId, async () => {
+          await guild.members.fetch();
+        })
+        .catch((error: unknown) => {
+          this.logger.warn(
+            `Could not refresh members of guild ${guildId}; using the cache: ${String(error)}`,
+          );
+        });
     }
 
     return guild;
