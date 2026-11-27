@@ -8,6 +8,14 @@ export interface EnvironmentVariables {
   DISCORD_GUILD_ID?: string;
   GEMINI_API_KEY?: string;
   GEMINI_MODEL: string;
+  /**
+   * Limits of the Gemini key's project as shown in Google AI Studio (null =
+   * unknown). Google has no API for them; the admin page compares the bot's
+   * own usage count with these. Editable on the page.
+   */
+  GEMINI_LIMIT_RPD: number | null;
+  GEMINI_LIMIT_RPM: number | null;
+  GEMINI_LIMIT_TPM: number | null;
   VERIFICATION_CHANNEL_ID?: string;
   VERIFIED_ROLE_ID?: string;
   VERIFIED_ROLE_NAME: string;
@@ -123,6 +131,26 @@ function integerValue(
   return value;
 }
 
+/** Optional positive integer; empty or 0 means "not set" (null). */
+function optionalLimit(
+  config: Record<string, unknown>,
+  key: string,
+): number | null {
+  const rawValue = optionalString(config, key);
+
+  if (rawValue === undefined) {
+    return null;
+  }
+
+  const value = Number(rawValue);
+
+  if (!Number.isInteger(value) || value < 0 || value > 1_000_000_000) {
+    throw new Error(`${key} must be a whole number between 0 and 1000000000`);
+  }
+
+  return value === 0 ? null : value;
+}
+
 function booleanValue(
   config: Record<string, unknown>,
   key: string,
@@ -174,6 +202,9 @@ export function validateEnvironment(
     GEMINI_API_KEY: optionalConfiguredString(config, 'GEMINI_API_KEY'),
     GEMINI_MODEL:
       optionalString(config, 'GEMINI_MODEL') ?? 'gemini-flash-latest',
+    GEMINI_LIMIT_RPD: optionalLimit(config, 'GEMINI_LIMIT_RPD'),
+    GEMINI_LIMIT_RPM: optionalLimit(config, 'GEMINI_LIMIT_RPM'),
+    GEMINI_LIMIT_TPM: optionalLimit(config, 'GEMINI_LIMIT_TPM'),
     VERIFICATION_CHANNEL_ID: optionalString(config, 'VERIFICATION_CHANNEL_ID'),
     VERIFIED_ROLE_ID: optionalString(config, 'VERIFIED_ROLE_ID'),
     VERIFIED_ROLE_NAME:

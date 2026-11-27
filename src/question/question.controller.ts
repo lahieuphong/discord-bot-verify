@@ -10,7 +10,7 @@ export class QuestionController {
   @Post('question')
   async question(@Body() body: unknown): Promise<GeminiAnswer> {
     const question = this.readQuestion(body);
-    return this.geminiService.ask(question);
+    return this.geminiService.ask(question, { source: 'http' });
   }
 
   private readQuestion(body: unknown): string {

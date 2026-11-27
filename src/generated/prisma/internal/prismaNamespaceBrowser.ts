@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   EmailVerification: 'EmailVerification',
   User: 'User',
-  VerificationPrompt: 'VerificationPrompt'
+  VerificationPrompt: 'VerificationPrompt',
+  GeminiRequest: 'GeminiRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -119,6 +120,29 @@ export const VerificationPromptScalarFieldEnum = {
 } as const
 
 export type VerificationPromptScalarFieldEnum = (typeof VerificationPromptScalarFieldEnum)[keyof typeof VerificationPromptScalarFieldEnum]
+
+
+export const GeminiRequestScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  keyFingerprint: 'keyFingerprint',
+  model: 'model',
+  source: 'source',
+  requester: 'requester',
+  ok: 'ok',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  totalTokens: 'totalTokens',
+  durationMs: 'durationMs',
+  errorStatus: 'errorStatus',
+  errorKind: 'errorKind',
+  errorMessage: 'errorMessage',
+  quotaId: 'quotaId',
+  quotaValue: 'quotaValue',
+  retryAfterSec: 'retryAfterSec'
+} as const
+
+export type GeminiRequestScalarFieldEnum = (typeof GeminiRequestScalarFieldEnum)[keyof typeof GeminiRequestScalarFieldEnum]
 
 
 export const SortOrder = {

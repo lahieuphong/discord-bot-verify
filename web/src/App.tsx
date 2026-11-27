@@ -1,6 +1,6 @@
 import { Loader2Icon, ShieldOffIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { Dashboard } from '@/components/dashboard';
+import { AdminShell } from '@/components/admin-shell';
 import { LoginPage } from '@/components/login-page';
 import {
   Card,
@@ -70,7 +70,7 @@ export function App() {
       );
     case 'authenticated':
       return (
-        <Dashboard
+        <AdminShell
           username={session.username}
           onSessionEnded={handleSessionEnded}
         />

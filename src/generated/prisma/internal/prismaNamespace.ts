@@ -399,7 +399,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   EmailVerification: 'EmailVerification',
   User: 'User',
-  VerificationPrompt: 'VerificationPrompt'
+  VerificationPrompt: 'VerificationPrompt',
+  GeminiRequest: 'GeminiRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -415,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "emailVerification" | "user" | "verificationPrompt"
+    modelProps: "emailVerification" | "user" | "verificationPrompt" | "geminiRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -641,6 +642,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GeminiRequest: {
+      payload: Prisma.$GeminiRequestPayload<ExtArgs>
+      fields: Prisma.GeminiRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GeminiRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GeminiRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.GeminiRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GeminiRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>
+        }
+        findMany: {
+          args: Prisma.GeminiRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>[]
+        }
+        create: {
+          args: Prisma.GeminiRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>
+        }
+        createMany: {
+          args: Prisma.GeminiRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GeminiRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.GeminiRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>
+        }
+        update: {
+          args: Prisma.GeminiRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.GeminiRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GeminiRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GeminiRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.GeminiRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GeminiRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.GeminiRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGeminiRequest>
+        }
+        groupBy: {
+          args: Prisma.GeminiRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GeminiRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GeminiRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GeminiRequestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -727,6 +802,29 @@ export const VerificationPromptScalarFieldEnum = {
 } as const
 
 export type VerificationPromptScalarFieldEnum = (typeof VerificationPromptScalarFieldEnum)[keyof typeof VerificationPromptScalarFieldEnum]
+
+
+export const GeminiRequestScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  keyFingerprint: 'keyFingerprint',
+  model: 'model',
+  source: 'source',
+  requester: 'requester',
+  ok: 'ok',
+  inputTokens: 'inputTokens',
+  outputTokens: 'outputTokens',
+  totalTokens: 'totalTokens',
+  durationMs: 'durationMs',
+  errorStatus: 'errorStatus',
+  errorKind: 'errorKind',
+  errorMessage: 'errorMessage',
+  quotaId: 'quotaId',
+  quotaValue: 'quotaValue',
+  retryAfterSec: 'retryAfterSec'
+} as const
+
+export type GeminiRequestScalarFieldEnum = (typeof GeminiRequestScalarFieldEnum)[keyof typeof GeminiRequestScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -826,6 +924,13 @@ export type EnumVerificationPromptDeliveryFieldRefInput<$PrismaModel> = FieldRef
  * Reference to a field of type 'VerificationPromptDelivery[]'
  */
 export type ListEnumVerificationPromptDeliveryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationPromptDelivery[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -996,6 +1101,7 @@ export type GlobalOmitConfig = {
   emailVerification?: Prisma.EmailVerificationOmit
   user?: Prisma.UserOmit
   verificationPrompt?: Prisma.VerificationPromptOmit
+  geminiRequest?: Prisma.GeminiRequestOmit
 }
 
 /* Types for Logging */

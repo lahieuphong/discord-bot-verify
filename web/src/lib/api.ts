@@ -1,4 +1,10 @@
-import type { MemberOverview } from './types';
+import type {
+  GeminiKeyCheck,
+  GeminiKeyInfo,
+  GeminiLimits,
+  GeminiOverview,
+  MemberOverview,
+} from './types';
 
 const BASE = '/export-excel';
 
@@ -54,4 +60,32 @@ export const api = {
     }),
   logout: () => request<void>('/api/logout', { method: 'POST' }),
   overview: () => request<MemberOverview>('/api/overview'),
+  gemini: () => request<GeminiOverview>('/api/gemini'),
+  checkGeminiKey: () =>
+    request<GeminiKeyCheck>('/api/gemini/check', { method: 'POST' }),
+  replaceGeminiKey: (apiKey: string) =>
+    request<GeminiKeyInfo>('/api/gemini/key', {
+      method: 'PUT',
+      body: JSON.stringify({ apiKey }),
+    }),
+  updateGeminiLimits: (limits: GeminiLimits) =>
+    request<GeminiLimits>('/api/gemini/limits', {
+      method: 'PUT',
+      body: JSON.stringify(limits),
+    }),
 };
+
+/** Bot status (public endpoint outside /export-excel). */
+export async function fetchBotStatus(): Promise<{
+  status: 'online' | 'offline' | 'disabled';
+  gatewayPingMs: number | null;
+} | null> {
+  try {
+    const response = await fetch('/ping', {
+      headers: { Accept: 'application/json' },
+    });
+    return response.ok ? ((await response.json()) as never) : null;
+  } catch {
+    return null;
+  }
+}

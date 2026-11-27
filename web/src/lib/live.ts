@@ -16,11 +16,30 @@ const RECONNECT_DELAY_MS = 5_000;
 /** Safety net while live: also reload now and then (relative times, missed events). */
 const LIVE_REFRESH_MS = 120_000;
 
+/**
+ * `reason` is the server's LiveChangeReason (e.g. "member-joined",
+ * "gemini-used"), or null for "reload everything" (polling, reconnects).
+ */
+export type LiveChangeHandler = (reason: string | null) => void;
+
+function reasonOf(event: Event): string | null {
+  try {
+    const data: unknown = JSON.parse((event as MessageEvent<string>).data);
+    return typeof data === 'object' &&
+      data !== null &&
+      typeof (data as { reason?: unknown }).reason === 'string'
+      ? (data as { reason: string }).reason
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export function useLiveUpdates({
   onChange,
   onUnauthorized,
 }: {
-  onChange: () => void;
+  onChange: LiveChangeHandler;
   onUnauthorized: (message: string) => void;
 }): LiveMode {
   const [mode, setMode] = useState<LiveMode>('connecting');
@@ -31,7 +50,7 @@ export function useLiveUpdates({
     if (typeof EventSource === 'undefined') {
       setMode('polling');
       const timer = window.setInterval(
-        () => callbacks.current.onChange(),
+        () => callbacks.current.onChange(null),
         POLL_INTERVAL_MS,
       );
       return () => window.clearInterval(timer);
@@ -48,7 +67,7 @@ export function useLiveUpdates({
       source?.close();
       setMode('polling');
       pollTimer = window.setInterval(
-        () => callbacks.current.onChange(),
+        () => callbacks.current.onChange(null),
         POLL_INTERVAL_MS,
       );
     };
@@ -64,11 +83,13 @@ export function useLiveUpdates({
         window.clearTimeout(readyTimer);
         setMode('live');
         // After a reconnect (deploy, network drop) we may have missed events.
-        if (connectedOnce) callbacks.current.onChange();
+        if (connectedOnce) callbacks.current.onChange(null);
         connectedOnce = true;
       });
 
-      source.addEventListener('change', () => callbacks.current.onChange());
+      source.addEventListener('change', (event) =>
+        callbacks.current.onChange(reasonOf(event)),
+      );
 
       source.onerror = () => {
         if (source?.readyState !== EventSource.CLOSED) {
@@ -96,7 +117,7 @@ export function useLiveUpdates({
 
     connect();
     const refreshTimer = window.setInterval(
-      () => callbacks.current.onChange(),
+      () => callbacks.current.onChange(null),
       LIVE_REFRESH_MS,
     );
 

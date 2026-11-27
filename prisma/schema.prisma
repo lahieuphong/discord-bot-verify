@@ -72,3 +72,31 @@ model VerificationPrompt {
   @@unique([guildId, discordUserId])
   @@map("verification_prompts")
 }
+
+/// One call to Gemini (Discord /question or POST /question). Google offers no
+/// API for the remaining quota of a key, so the bot counts its own usage for
+/// the Gemini tab of the admin page. The question text is never stored.
+model GeminiRequest {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now()) @map("created_at")
+  /// First 12 hex characters of SHA-256(key): usage per key, without the key.
+  keyFingerprint String   @map("key_fingerprint") @db.VarChar(16)
+  model          String   @db.VarChar(100)
+  source         String   @db.VarChar(16)
+  requester      String?  @db.VarChar(100)
+  ok             Boolean
+  inputTokens    Int?     @map("input_tokens")
+  outputTokens   Int?     @map("output_tokens")
+  totalTokens    Int?     @map("total_tokens")
+  durationMs     Int      @map("duration_ms")
+  errorStatus    Int?     @map("error_status")
+  errorKind      String?  @map("error_kind") @db.VarChar(32)
+  errorMessage   String?  @map("error_message") @db.VarChar(500)
+  quotaId        String?  @map("quota_id") @db.VarChar(200)
+  quotaValue     Int?     @map("quota_value")
+  retryAfterSec  Int?     @map("retry_after_sec")
+
+  @@index([keyFingerprint, createdAt])
+  @@index([createdAt])
+  @@map("gemini_requests")
+}

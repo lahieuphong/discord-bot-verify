@@ -141,6 +141,30 @@ Studio to trusted administrators, and define an appropriate retention policy.
 The key stays on the server and is never sent to Discord clients or returned by
 the HTTP API.
 
+### Gemini usage tab
+
+Google has no API for a key's remaining quota, so the bot counts its own
+calls: every `/question` (Discord or HTTP) is stored in the `gemini_requests`
+table (time, source, Discord username, tokens, duration and, for failures, the
+error and the quota Google reported in a 429; never the question text). Rows
+are kept for 180 days.
+
+The **Gemini API** tab of `/export-excel` shows, for the current key:
+
+- requests today (quota days start at midnight Pacific time, the Gemini reset),
+  requests and input tokens in the last minute, and errors today, each against
+  its limit with a warning at 80 % and an alert when Google answers 429;
+- a 14-day chart and the 20 most recent calls;
+- **Kiểm tra** (asks Google whether the key works, using no generation quota)
+  and **Đổi key mới**: the new key is checked with Google, written to `.env`
+  and used from the next question, without a restart;
+- the limits (`GEMINI_LIMIT_RPD`, `GEMINI_LIMIT_RPM`, `GEMINI_LIMIT_TPM`) as
+  shown in AI Studio, also saved to `.env`. Limits Google reported in a 429 are
+  offered as suggestions.
+
+Quotas belong to the Google **project**, not the key: a replacement key only
+brings fresh quota if it comes from another project.
+
 ## Run
 
 ```bash
@@ -196,6 +220,7 @@ npm run start:prod
 | `DISCORD_GUILD_ID` | No | Test server ID for immediate guild-scoped command registration. |
 | `GEMINI_API_KEY` | For `/question` | Server-side key from Google AI Studio. |
 | `GEMINI_MODEL` | No | Gemini model; defaults to `gemini-flash-latest`. |
+| `GEMINI_LIMIT_RPD` / `_RPM` / `_TPM` | No | The key's requests per day, requests per minute and input tokens per minute from AI Studio, for the Gemini tab. Empty or `0` = unknown. |
 | `VERIFICATION_CHANNEL_ID` | For user verification | Channel that holds the verification panel and new-member prompts. |
 | `VERIFIED_ROLE_ID` | Recommended | Exact role to assign after successful verification. |
 | `VERIFIED_ROLE_NAME` | No | Role name fallback; defaults to `member`. |
@@ -205,7 +230,8 @@ npm run start:prod
 
 ## Member page and Excel export
 
-`/export-excel` is the admin page (Vietnamese UI). It is a small React app in
+`/export-excel` is the admin page (Vietnamese UI), with two tabs: **Thành viên**
+(below) and **Gemini API** (see *Gemini usage tab* above). It is a small React app in
 [`web/`](web/) built with [shadcn/ui](https://ui.shadcn.com) components and
 Tailwind CSS; `npm run build` compiles it into `dist/web`, which Nest serves.
 Text uses SF Pro where the system provides it (macOS/iOS or a local install)

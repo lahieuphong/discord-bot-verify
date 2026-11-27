@@ -37,7 +37,9 @@ describe('QuestionController', () => {
     await expect(
       controller.question({ question: '  What is the capital of France?  ' }),
     ).resolves.toEqual(answer);
-    expect(ask).toHaveBeenCalledWith('What is the capital of France?');
+    expect(ask).toHaveBeenCalledWith('What is the capital of France?', {
+      source: 'http',
+    });
   });
 
   it('rejects an empty question', async () => {

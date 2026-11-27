@@ -1,9 +1,7 @@
 import {
   ClockIcon,
   DownloadIcon,
-  LogOutIcon,
   RefreshCwIcon,
-  ShieldCheckIcon,
   TriangleAlertIcon,
   UserMinusIcon,
   UserPlusIcon,
@@ -17,11 +15,10 @@ import { StatCards } from '@/components/stat-cards';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Toaster } from '@/components/ui/sonner';
 import { api, ApiError, DOWNLOAD_URL } from '@/lib/api';
 import { diffOverview, type MemberChange } from '@/lib/diff';
 import { formatClock, formatLongDate, formatRelative } from '@/lib/format';
-import { useLiveUpdates } from '@/lib/live';
+import type { LiveMode } from '@/lib/live';
 import { applyNow, useNow } from '@/lib/now';
 import type { MemberFilter, MemberOverview } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -62,10 +59,13 @@ function announce(changes: MemberChange[]) {
 }
 
 export function Dashboard({
-  username,
+  liveMode,
+  refreshSignal,
   onSessionEnded,
 }: {
-  username: string;
+  liveMode: LiveMode;
+  /** Increases whenever the live stream reports a member change. */
+  refreshSignal: number;
   onSessionEnded: (notice: string | null) => void;
 }) {
   const [data, setData] = useState<MemberOverview | null>(null);
@@ -133,10 +133,12 @@ export function Dashboard({
     );
   }, [load]);
 
-  const liveMode = useLiveUpdates({
-    onChange: reloadSoon,
-    onUnauthorized: onSessionEnded,
-  });
+  // Reload on live changes, but not for the signal value present at mount
+  // (the mount itself already loads).
+  const mountSignal = useRef(refreshSignal);
+  useEffect(() => {
+    if (refreshSignal !== mountSignal.current) reloadSoon();
+  }, [refreshSignal, reloadSoon]);
 
   useEffect(() => {
     void load();
@@ -154,136 +156,105 @@ export function Dashboard({
     [data, now],
   );
 
-  async function logout() {
-    await api.logout().catch(() => undefined);
-    onSessionEnded(null);
-  }
-
   return (
-    <div className="min-h-svh bg-muted/40">
-      <Toaster position="bottom-right" closeButton />
-      <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-7xl items-center gap-3 px-4 sm:px-6">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <ShieldCheckIcon className="size-[18px]" />
-          </span>
-          <div className="min-w-0 flex-1 leading-tight">
-            <div className="truncate text-sm font-semibold tracking-tight">
-              Quản lý thành viên
-            </div>
-            <div className="truncate text-xs text-muted-foreground">
-              {overview?.guildName ?? 'Discord'}
-            </div>
-          </div>
-          <span className="hidden text-sm text-muted-foreground sm:inline">
-            {username}
-          </span>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => void logout()}
-            aria-label="Đăng xuất"
-          >
-            <LogOutIcon />
-            <span className="hidden sm:inline">Đăng xuất</span>
-          </Button>
-        </div>
-      </header>
-
-      <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-semibold tracking-tight">
-              Tổng quan thành viên
-            </h1>
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
-              <LiveIndicator mode={liveMode} />
-              <span className="inline-flex items-center gap-1.5">
-                <ClockIcon className="size-4" />
-                <time
-                  dateTime={now.toISOString()}
-                  className="font-medium text-foreground tabular-nums"
-                >
-                  {formatClock(now)}
-                </time>
-                <span>· {formatLongDate(now)}</span>
+    <main className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-1.5">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Tổng quan thành viên
+            {overview?.guildName && (
+              <span className="ml-2 text-base font-normal text-muted-foreground">
+                · {overview.guildName}
               </span>
-              {!overview ? (
-                <span>Đang tải dữ liệu…</span>
-              ) : (
-                // While live, data is pushed the moment it changes; otherwise
-                // show how old the last load is.
-                liveMode !== 'live' && (
-                  <span className="tabular-nums">
-                    Dữ liệu tải {formatRelative(overview.generatedAt, now)}
-                  </span>
-                )
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => void load()}
-              disabled={loading}
-            >
-              <RefreshCwIcon className={cn(loading && 'animate-spin')} />
-              Làm mới
-            </Button>
-            <a className={buttonVariants()} href={DOWNLOAD_URL}>
-              <DownloadIcon />
-              Tải Excel
-            </a>
+            )}
+          </h1>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+            <LiveIndicator mode={liveMode} />
+            <span className="inline-flex items-center gap-1.5">
+              <ClockIcon className="size-4" />
+              <time
+                dateTime={now.toISOString()}
+                className="font-medium text-foreground tabular-nums"
+              >
+                {formatClock(now)}
+              </time>
+              <span>· {formatLongDate(now)}</span>
+            </span>
+            {!overview ? (
+              <span>Đang tải dữ liệu…</span>
+            ) : (
+              // While live, data is pushed the moment it changes; otherwise
+              // show how old the last load is.
+              liveMode !== 'live' && (
+                <span className="tabular-nums">
+                  Dữ liệu tải {formatRelative(overview.generatedAt, now)}
+                </span>
+              )
+            )}
           </div>
         </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => void load()}
+            disabled={loading}
+          >
+            <RefreshCwIcon className={cn(loading && 'animate-spin')} />
+            Làm mới
+          </Button>
+          <a className={buttonVariants()} href={DOWNLOAD_URL}>
+            <DownloadIcon />
+            Tải Excel
+          </a>
+        </div>
+      </div>
 
-        {error && (
-          <Alert variant="destructive">
-            <TriangleAlertIcon />
-            <AlertTitle>Không tải được dữ liệu</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+      {error && (
+        <Alert variant="destructive">
+          <TriangleAlertIcon />
+          <AlertTitle>Không tải được dữ liệu</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-        {overview && !overview.discordConnected && (
-          <Alert variant="warning">
-            <TriangleAlertIcon />
-            <AlertTitle>Bot chưa kết nối Discord</AlertTitle>
-            <AlertDescription>
-              Chưa lấy được danh sách thành viên. Trang sẽ tự cập nhật khi bot
-              kết nối lại.
-            </AlertDescription>
-          </Alert>
-        )}
+      {overview && !overview.discordConnected && (
+        <Alert variant="warning">
+          <TriangleAlertIcon />
+          <AlertTitle>Bot chưa kết nối Discord</AlertTitle>
+          <AlertDescription>
+            Chưa lấy được danh sách thành viên. Trang sẽ tự cập nhật khi bot kết
+            nối lại.
+          </AlertDescription>
+        </Alert>
+      )}
 
-        {overview ? (
-          <>
-            <StatCards
-              counts={overview.counts}
-              newMemberHours={overview.newMemberHours}
-              filter={filter}
-              onFilterChange={setFilter}
-            />
-            <MembersCard
-              overview={overview}
-              now={now}
-              filter={filter}
-              onFilterChange={setFilter}
-              highlighted={highlighted}
-            />
-            <ActivityCard overview={overview} now={now} />
-            {overview.counts.registeredNotInServer > 0 && (
-              <p className="text-center text-xs text-muted-foreground">
-                Có {overview.counts.registeredNotInServer} người đã xác thực
-                nhưng hiện không còn trong server (vẫn có trong file Excel).
-              </p>
-            )}
-          </>
-        ) : (
-          !error && <DashboardSkeleton />
-        )}
-      </main>
-    </div>
+      {overview ? (
+        <>
+          <StatCards
+            counts={overview.counts}
+            newMemberHours={overview.newMemberHours}
+            filter={filter}
+            onFilterChange={setFilter}
+          />
+          <MembersCard
+            overview={overview}
+            now={now}
+            filter={filter}
+            onFilterChange={setFilter}
+            highlighted={highlighted}
+          />
+          <ActivityCard overview={overview} now={now} />
+          {overview.counts.registeredNotInServer > 0 && (
+            <p className="text-center text-xs text-muted-foreground">
+              Có {overview.counts.registeredNotInServer} người đã xác thực nhưng
+              hiện không còn trong server (vẫn có trong file Excel).
+            </p>
+          )}
+        </>
+      ) : (
+        !error && <DashboardSkeleton />
+      )}
+    </main>
   );
 }
 

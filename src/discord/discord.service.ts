@@ -264,7 +264,10 @@ export class DiscordService
     const question = interaction.options.getString('text', true);
     await interaction.deferReply();
 
-    const result = await this.geminiService.ask(question);
+    const result = await this.geminiService.ask(question, {
+      source: 'discord',
+      requester: interaction.user.username,
+    });
     const chunks = splitDiscordMarkdown(result.answer);
 
     await interaction.editReply(chunks[0]);

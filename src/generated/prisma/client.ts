@@ -57,3 +57,10 @@ export type User = Prisma.UserModel
  * startup scan of existing members does not send it again on every restart.
  */
 export type VerificationPrompt = Prisma.VerificationPromptModel
+/**
+ * Model GeminiRequest
+ * One call to Gemini (Discord /question or POST /question). Google offers no
+ * API for the remaining quota of a key, so the bot counts its own usage for
+ * the Gemini tab of the admin page. The question text is never stored.
+ */
+export type GeminiRequest = Prisma.GeminiRequestModel

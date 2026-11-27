@@ -2,7 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Subject, type Observable } from 'rxjs';
 
 export type LiveChangeReason =
-  'member-joined' | 'member-left' | 'member-updated' | 'verification-submitted';
+  | 'member-joined'
+  | 'member-left'
+  | 'member-updated'
+  | 'verification-submitted'
+  /** A Gemini call was recorded (Gemini tab). */
+  | 'gemini-used'
+  /** The Gemini key or limits were changed on the admin page. */
+  | 'gemini-settings';
 
 export interface LiveChange {
   reason: LiveChangeReason;

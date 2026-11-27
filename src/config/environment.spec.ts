@@ -20,6 +20,9 @@ describe('validateEnvironment', () => {
       DISCORD_GUILD_ID: undefined,
       GEMINI_API_KEY: undefined,
       GEMINI_MODEL: 'gemini-flash-latest',
+      GEMINI_LIMIT_RPD: null,
+      GEMINI_LIMIT_RPM: null,
+      GEMINI_LIMIT_TPM: null,
       VERIFICATION_CHANNEL_ID: undefined,
       VERIFIED_ROLE_ID: undefined,
       VERIFIED_ROLE_NAME: 'member',
@@ -116,5 +119,26 @@ describe('export login settings', () => {
     expect(() => validateEnvironment({ ...base, ...settings })).toThrow(
       message,
     );
+  });
+
+  it('parses Gemini limits; empty or 0 means unknown', () => {
+    expect(
+      validateEnvironment({
+        ...base,
+        GEMINI_LIMIT_RPD: '250',
+        GEMINI_LIMIT_RPM: '0',
+        GEMINI_LIMIT_TPM: '',
+      }),
+    ).toMatchObject({
+      GEMINI_LIMIT_RPD: 250,
+      GEMINI_LIMIT_RPM: null,
+      GEMINI_LIMIT_TPM: null,
+    });
+  });
+
+  it.each(['-1', '1.5', 'many'])('rejects a Gemini limit of %s', (value) => {
+    expect(() =>
+      validateEnvironment({ ...base, GEMINI_LIMIT_RPD: value }),
+    ).toThrow(/GEMINI_LIMIT_RPD/);
   });
 });
