@@ -27,6 +27,7 @@ function createController({
   const usageService = {
     isEnabled: vi.fn(() => trackingEnabled),
     getKeyUsage: vi.fn(() => Promise.resolve({ today: { requests: 3 } })),
+    listRequests: vi.fn(() => Promise.resolve({ entries: [], total: 42 })),
   };
   const audit = vi.fn();
   const controller = new GeminiAdminController(
@@ -116,5 +117,48 @@ describe('GeminiAdminController', () => {
       'gemini_key_rejected',
     ]);
     expect(JSON.stringify(audit.mock.calls)).not.toMatch(/Secret/);
+  });
+
+  it('pages the calls of the current key', async () => {
+    const { controller, usageService } = createController();
+
+    await expect(controller.requests('3', '20')).resolves.toEqual({
+      entries: [],
+      total: 42,
+      page: 3,
+      pageSize: 20,
+    });
+    expect(usageService.listRequests).toHaveBeenCalledWith(
+      'abc123abc123',
+      40,
+      20,
+    );
+  });
+
+  it.each([
+    ['0', '10'],
+    ['1.5', '10'],
+    ['1', '7'],
+    [['1', '2'] as unknown as string, '10'],
+  ])('rejects page %j / size %j', async (page, size) => {
+    const { controller } = createController();
+
+    await expect(controller.requests(page, size)).rejects.toBeInstanceOf(
+      BadRequestException,
+    );
+  });
+
+  it('returns an empty page without a key or database', async () => {
+    const { controller, usageService } = createController({
+      trackingEnabled: false,
+    });
+
+    await expect(controller.requests()).resolves.toMatchObject({
+      entries: [],
+      total: 0,
+      page: 1,
+      pageSize: 10,
+    });
+    expect(usageService.listRequests).not.toHaveBeenCalled();
   });
 });

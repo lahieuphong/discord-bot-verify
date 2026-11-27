@@ -193,7 +193,11 @@ export function GeminiPage({
             </div>
             {usage && (
               <div className="min-w-0 lg:col-span-2">
-                <RecentCard recent={usage.recent} now={now} />
+                <RecentCard
+                  refreshKey={overview.generatedAt}
+                  now={now}
+                  onError={handleError}
+                />
               </div>
             )}
           </div>

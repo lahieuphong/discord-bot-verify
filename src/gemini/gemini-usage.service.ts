@@ -17,6 +17,21 @@ import {
 const RETENTION_DAYS = 180;
 const DAY_MS = 24 * 60 * 60 * 1000;
 const RECENT_LIMIT = 20;
+/** Columns of a call shown on the admin page (never the question text). */
+const RECENT_SELECT = {
+  createdAt: true,
+  ok: true,
+  inputTokens: true,
+  outputTokens: true,
+  totalTokens: true,
+  errorKind: true,
+  source: true,
+  requester: true,
+  durationMs: true,
+  errorMessage: true,
+  retryAfterSec: true,
+  quotaId: true,
+} as const;
 
 /** Where a question came from; `admin` = "Hỏi thử" on the admin page. */
 export type GeminiSource = 'discord' | 'http' | 'admin';
@@ -134,20 +149,7 @@ export class GeminiUsageService {
           where,
           orderBy: { createdAt: 'desc' },
           take: RECENT_LIMIT,
-          select: {
-            createdAt: true,
-            ok: true,
-            inputTokens: true,
-            outputTokens: true,
-            totalTokens: true,
-            errorKind: true,
-            source: true,
-            requester: true,
-            durationMs: true,
-            errorMessage: true,
-            retryAfterSec: true,
-            quotaId: true,
-          },
+          select: RECENT_SELECT,
         }),
         this.prisma.geminiRequest.findFirst({
           where: { ...where, ok: false },
@@ -179,6 +181,27 @@ export class GeminiUsageService {
           }
         : null,
     };
+  }
+
+  /** One page of a key's calls, newest first, with the total count. */
+  async listRequests(
+    keyFingerprint: string,
+    offset: number,
+    limit: number,
+  ): Promise<{ entries: RecentRow[]; total: number }> {
+    const where = { keyFingerprint };
+    const [entries, total] = await Promise.all([
+      this.prisma.geminiRequest.findMany({
+        where,
+        orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+        skip: offset,
+        take: limit,
+        select: RECENT_SELECT,
+      }),
+      this.prisma.geminiRequest.count({ where }),
+    ]);
+
+    return { entries, total };
   }
 
   private async purgeOldRows(): Promise<void> {

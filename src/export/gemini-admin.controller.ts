@@ -9,11 +9,12 @@ import {
   Logger,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import type { Request } from 'express';
-import type { GeminiLimits } from '../gemini/gemini-usage.js';
+import type { GeminiLimits, RecentRow } from '../gemini/gemini-usage.js';
 import {
   GeminiUsageService,
   type KeyUsage,
@@ -39,6 +40,8 @@ export interface GeminiOverview {
 }
 
 const MAX_LIMIT = 1_000_000_000;
+/** Page sizes of "Lượt gọi gần đây" (same as the other tables). */
+export const REQUEST_PAGE_SIZES = [10, 20, 50, 100];
 
 function readLimit(body: Record<string, unknown>, key: keyof GeminiLimits) {
   const value = body[key];
@@ -90,6 +93,53 @@ export class GeminiAdminController {
           ? await this.usageService.getKeyUsage(key.fingerprint, now)
           : null,
     };
+  }
+
+  /**
+   * One page of the current key's calls ("Lượt gọi gần đây"), newest first:
+   * `page` from 1, `pageSize` one of REQUEST_PAGE_SIZES.
+   */
+  @Get('requests')
+  @Header('Cache-Control', 'no-store')
+  async requests(
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ): Promise<{
+    entries: RecentRow[];
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    if (
+      (page !== undefined && typeof page !== 'string') ||
+      (pageSize !== undefined && typeof pageSize !== 'string')
+    ) {
+      throw new BadRequestException('Trang không hợp lệ.');
+    }
+
+    const pageNumber = page === undefined ? 1 : Number(page);
+    const size = pageSize === undefined ? 10 : Number(pageSize);
+
+    if (
+      !Number.isInteger(pageNumber) ||
+      pageNumber < 1 ||
+      pageNumber > 1_000_000 ||
+      !REQUEST_PAGE_SIZES.includes(size)
+    ) {
+      throw new BadRequestException('Trang không hợp lệ.');
+    }
+
+    const fingerprint = this.geminiService.keyInfo().fingerprint;
+    if (!fingerprint || !this.usageService.isEnabled()) {
+      return { entries: [], total: 0, page: pageNumber, pageSize: size };
+    }
+
+    const result = await this.usageService.listRequests(
+      fingerprint,
+      (pageNumber - 1) * size,
+      size,
+    );
+    return { ...result, page: pageNumber, pageSize: size };
   }
 
   @Post('check')

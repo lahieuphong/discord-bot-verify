@@ -9,6 +9,7 @@ import type {
   GeminiKeyInfo,
   GeminiLimits,
   GeminiOverview,
+  GeminiRecentRequest,
   MemberOverview,
 } from './types';
 
@@ -96,6 +97,13 @@ export const api = {
     const query = params.toString();
     return request<AuditPage>(`/api/audit${query ? `?${query}` : ''}`);
   },
+  geminiRequests: (page: number, pageSize: number) =>
+    request<{
+      entries: GeminiRecentRequest[];
+      total: number;
+      page: number;
+      pageSize: number;
+    }>(`/api/gemini/requests?page=${page}&pageSize=${pageSize}`),
   assistant: () => request<AssistantOverview>('/api/assistant'),
   assistantSource: (id: string) =>
     request<{ id: string; content: string }>(

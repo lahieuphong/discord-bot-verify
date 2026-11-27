@@ -52,7 +52,7 @@ export function Pager({
         </span>
         {onPageSizeChange && (
           <label className="hidden items-center gap-2 md:flex">
-            <span>Số dòng</span>
+            <span className="whitespace-nowrap">Số dòng</span>
             <select
               className="h-8 cursor-pointer rounded-md border border-input bg-background px-2 text-sm text-foreground shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
               value={pageSize}
