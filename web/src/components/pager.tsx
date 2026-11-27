@@ -7,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { Select } from '@/components/ui/select';
 import { getPageItems } from '@/lib/pagination';
 
 export const PAGE_SIZES = [10, 20, 50, 100];
@@ -51,20 +52,21 @@ export function Pager({
           )}
         </span>
         {onPageSizeChange && (
-          <label className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-2 md:flex">
             <span className="whitespace-nowrap">Số dòng</span>
-            <select
-              className="h-8 cursor-pointer rounded-md border border-input bg-background px-2 text-sm text-foreground shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            {/* Same dropdown as every other one on the page. */}
+            <Select
+              size="sm"
+              className="w-20"
+              aria-label="Số dòng mỗi trang"
               value={pageSize}
-              onChange={(event) => onPageSizeChange(Number(event.target.value))}
-            >
-              {PAGE_SIZES.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </label>
+              onValueChange={onPageSizeChange}
+              options={PAGE_SIZES.map((size) => ({
+                value: size,
+                label: String(size),
+              }))}
+            />
+          </div>
         )}
       </div>
 
