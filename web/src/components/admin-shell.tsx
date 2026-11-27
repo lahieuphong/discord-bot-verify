@@ -53,10 +53,30 @@ export function AdminShell({
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
+  // Tabs stay mounted once opened (only hidden), so going back to one shows
+  // it at once instead of reloading it behind a skeleton.
+  const [visited, setVisited] = useState<ReadonlySet<Tab>>(
+    () => new Set([tab]),
+  );
+  useEffect(() => {
+    setVisited((current) =>
+      current.has(tab) ? current : new Set([...current, tab]),
+    );
+  }, [tab]);
+
   const changeTab = (next: Tab) => {
+    if (next === tab) return;
     window.history.replaceState(null, '', TAB_HASH[next]);
     setTab(next);
+    window.scrollTo({ top: 0 });
   };
+
+  const panel = (id: Tab, content: React.ReactNode) =>
+    visited.has(id) || tab === id ? (
+      <div key={id} className="tab-panel" hidden={tab !== id}>
+        {content}
+      </div>
+    ) : null;
 
   const onChange = useCallback((reason: string | null) => {
     const target = tabOfReason(reason);
@@ -98,25 +118,28 @@ export function AdminShell({
         onTabChange={changeTab}
         onLogout={() => void logout()}
       />
-      {tab === 'members' && (
+      {panel(
+        'members',
         <Dashboard
           liveMode={liveMode}
           refreshSignal={signals.members}
           onSessionEnded={onSessionEnded}
-        />
+        />,
       )}
-      {tab === 'gemini' && (
+      {panel(
+        'gemini',
         <GeminiPage
           liveMode={liveMode}
           refreshSignal={signals.gemini}
           onSessionEnded={onSessionEnded}
-        />
+        />,
       )}
-      {tab === 'assistant' && <AssistantPage onSessionEnded={onSessionEnded} />}
-      {tab === 'audit' && (
+      {panel('assistant', <AssistantPage onSessionEnded={onSessionEnded} />)}
+      {panel(
+        'audit',
         <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-          <AuditPage onError={auditError} />
-        </main>
+          <AuditPage onError={auditError} active={tab === 'audit'} />
+        </main>,
       )}
     </div>
   );

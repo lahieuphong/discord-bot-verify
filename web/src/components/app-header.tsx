@@ -82,7 +82,7 @@ export function AppHeader({
               active={tab === item.tab}
               aria-label={item.label}
               title={item.label}
-              className="h-full gap-2 rounded-lg px-3.5 text-[15px] hover:bg-foreground/5 sm:px-4 data-[state=active]:border-sky-300 data-[state=active]:bg-sky-100 data-[state=active]:text-sky-800 data-[state=active]:shadow-sm [&_svg:not([class*='size-'])]:size-[18px]"
+              className="h-full gap-2 rounded-lg px-3.5 text-[15px] transition-[background-color,border-color,color,box-shadow] duration-200 hover:bg-foreground/5 sm:px-4 data-[state=active]:border-sky-300 data-[state=active]:bg-sky-100 data-[state=active]:text-sky-800 data-[state=active]:shadow-sm [&_svg:not([class*='size-'])]:size-[18px]"
               onClick={() => onTabChange(item.tab)}
             >
               <item.icon />

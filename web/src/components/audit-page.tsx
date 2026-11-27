@@ -111,8 +111,11 @@ function SourceIcon({ source }: { source: AuditSource }) {
 /** Who logged in, downloaded the Excel file or changed something, and from where. */
 export function AuditPage({
   onError,
+  active = true,
 }: {
   onError: (reason: unknown) => string;
+  /** False while the tab is hidden: live polling pauses. */
+  active?: boolean;
 }) {
   const [filter, setFilter] = useState<AuditFilter>(DEFAULT_FILTER);
   const [searchText, setSearchText] = useState('');
@@ -228,7 +231,7 @@ export function AuditPage({
     };
 
     const timer = setInterval(() => {
-      if (polling.current || document.hidden) return;
+      if (polling.current || document.hidden || !active) return;
       polling.current = true;
       tick()
         .catch((reason: unknown) => {
@@ -247,7 +250,7 @@ export function AuditPage({
       clearInterval(timer);
       clearTimeout(clearFresh);
     };
-  }, [filter, page, pageSize, error, onError]);
+  }, [filter, page, pageSize, error, onError, active]);
 
   /** Changes page and brings the top of the list into view. */
   const goToPage = (next: number) => {
