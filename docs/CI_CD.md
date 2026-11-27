@@ -39,7 +39,7 @@ service NSSM `discord-bot`, cổng 3000, IIS chuyển tiếp vào cổng đó, l
    `app.previous-<thời gian>`, đổi `app.next` thành `app`, khởi động lại.
 4. Chờ `GET /ping` báo `online` (tối đa 120 giây). Nếu không lên, script **tự
    quay về** bản cũ, còn bản lỗi được giữ ở `app.failed-<thời gian>` để xem.
-5. Giữ 3 bản `app.previous-*` gần nhất, xoá các bản cũ hơn.
+5. Chỉ giữ 1 bản `app.previous-*` gần nhất (bản ngay trước bản đang chạy, để quay lại khi cần), xoá các bản cũ hơn.
 
 Trong lúc chuyển, ai bấm nút xác thực sẽ thấy "Tương tác thất bại" và chỉ cần
 bấm lại. Migration chạy **trước** khi chuyển nên phải luôn tương thích với

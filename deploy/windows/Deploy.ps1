@@ -27,7 +27,7 @@ param(
   [int]$Port = 3000,
   [int]$SmokePort = 3099,
   [int]$HealthTimeoutSec = 120,
-  [int]$KeepPrevious = 3,
+  [int]$KeepPrevious = 1,
   [string]$Nssm = 'C:\tools\nssm\win64\nssm.exe',
   # Only prepare app.next and smoke-test it; never stops the running bot.
   [switch]$PrepareOnly
