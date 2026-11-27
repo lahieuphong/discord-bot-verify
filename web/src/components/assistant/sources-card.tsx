@@ -6,7 +6,7 @@ import {
   Loader2Icon,
   SearchIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,27 +18,17 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { MarkdownView } from '@/components/assistant/markdown-view';
 import { api } from '@/lib/api';
 import { formatDateTime, normalizeSearch } from '@/lib/format';
 import { formatNumber } from '@/lib/gemini';
+import { indexContent, SEARCH_LIMIT, searchIndexed } from '@/lib/markdown-lite';
 import type {
   AssistantOverview,
   AssistantSource,
   AssistantTokenCounts,
 } from '@/lib/types';
 import { cn } from '@/lib/utils';
-
-interface IndexedLine {
-  text: string;
-  /** Lower-case, without diacritics: computed once, not per keystroke. */
-  key: string;
-}
-
-function indexLines(content: string): IndexedLine[] {
-  return content
-    .split('\n')
-    .map((text) => ({ text, key: normalizeSearch(text) }));
-}
 
 function SourceViewer({
   source,
@@ -65,21 +55,19 @@ function SourceViewer({
     };
   }, [source.id, onError]);
 
+  // Searching: lines indexed once, results grouped under their headings.
+  // The query is deferred so typing stays smooth on the big wiki.
+  const plainHeadings = source.origin === 'wiki';
   const index = useMemo(
-    () => (content === null ? null : indexLines(content)),
-    [content],
+    () => (content === null ? null : indexContent(content, { plainHeadings })),
+    [content, plainHeadings],
   );
-  const shown = useMemo(() => {
-    if (content === null || index === null) return null;
-    if (query.trim().length < 2) return content;
-    const needle = normalizeSearch(query);
-    const lines = index
-      .filter((line) => line.key.includes(needle))
-      .map((line) => line.text);
-    return lines.length > 0
-      ? lines.join('\n')
-      : 'Không có dòng nào chứa từ này.';
-  }, [content, index, query]);
+  const deferredQuery = useDeferredValue(query);
+  const searching = normalizeSearch(deferredQuery).length >= 2;
+  const results = useMemo(
+    () => (index && searching ? searchIndexed(index, deferredQuery) : null),
+    [index, deferredQuery, searching],
+  );
 
   return (
     <div className="mt-3 flex flex-col gap-2">
@@ -93,14 +81,53 @@ function SourceViewer({
           aria-label={`Tìm trong ${source.title}`}
         />
       </div>
-      {shown === null ? (
+
+      {content === null ? (
         <div className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
           <Loader2Icon className="size-4 animate-spin" /> Đang tải nội dung…
         </div>
       ) : (
-        <pre className="max-h-96 overflow-auto rounded-lg border bg-muted/40 p-3 font-sans text-xs leading-relaxed whitespace-pre-wrap">
-          {shown}
-        </pre>
+        <div className="max-h-[28rem] overflow-auto rounded-lg border bg-muted/30 px-4 py-3">
+          <p className="sr-only" aria-live="polite">
+            {results ? `${results.total} dòng khớp` : ''}
+          </p>
+          {results &&
+            (results.total === 0 ? (
+              <p className="py-4 text-center text-sm text-muted-foreground">
+                Không có dòng nào chứa từ này.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <p className="text-xs text-muted-foreground" aria-hidden>
+                  {formatNumber(results.total)} dòng khớp
+                  {results.total > SEARCH_LIMIT &&
+                    `, hiện ${formatNumber(SEARCH_LIMIT)} dòng đầu`}
+                </p>
+                {results.groups.map((group, groupIndex) => (
+                  <section
+                    key={`${group.path}-${groupIndex}`}
+                    className="flex flex-col gap-1.5 border-l-2 border-sky-200 pl-3"
+                  >
+                    {group.path && (
+                      <div className="text-xs font-medium text-sky-800">
+                        {group.path}
+                      </div>
+                    )}
+                    <MarkdownView
+                      text={group.lines.join('\n\n')}
+                      query={deferredQuery}
+                      className="gap-1.5"
+                    />
+                  </section>
+                ))}
+              </div>
+            ))}
+          {/* Kept mounted while searching: rebuilding the whole wiki on
+              every backspace would be slow. */}
+          <div hidden={results !== null}>
+            <MarkdownView text={content} plainHeadings={plainHeadings} />
+          </div>
+        </div>
       )}
     </div>
   );

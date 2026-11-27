@@ -1,5 +1,6 @@
 import { EyeIcon, Loader2Icon, SendIcon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
+import { MarkdownView } from '@/components/assistant/markdown-view';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -207,8 +208,8 @@ export function TryCard({
 
         {result && (
           <div className="mt-4 flex flex-col gap-2">
-            <div className="rounded-xl border bg-muted/30 p-4 text-sm leading-relaxed whitespace-pre-wrap">
-              {result.answer}
+            <div className="rounded-xl border bg-muted/30 p-4">
+              <MarkdownView text={result.answer} />
             </div>
             <p className="text-xs text-muted-foreground tabular-nums">
               {(result.durationMs / 1000).toFixed(1)} giây ·{' '}
