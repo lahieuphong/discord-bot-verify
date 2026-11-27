@@ -1,6 +1,6 @@
 import { KeyRoundIcon, TriangleAlertIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { FlowCard, PersonaCard } from '@/components/assistant/flow-card';
+import { FlowCard } from '@/components/assistant/flow-card';
 import { SourcesCard } from '@/components/assistant/sources-card';
 import { TryCard } from '@/components/assistant/try-card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -85,8 +85,9 @@ export function AssistantPage({
       {overview ? (
         <>
           <FlowCard overview={overview} systemTokens={tokens?.total ?? null} />
-          <div className="grid items-start gap-6 lg:grid-cols-5">
-            <div className="flex min-w-0 flex-col gap-6 lg:col-span-3">
+          {/* Both cards stretch to the taller one, so their bottoms line up. */}
+          <div className="grid items-stretch gap-6 lg:grid-cols-5">
+            <div className="flex min-w-0 flex-col lg:col-span-3 [&>*]:flex-1">
               <SourcesCard
                 overview={overview}
                 tokens={tokens}
@@ -95,13 +96,12 @@ export function AssistantPage({
                 onError={handleError}
               />
             </div>
-            <div className="flex min-w-0 flex-col gap-6 lg:col-span-2">
+            <div className="flex min-w-0 flex-col lg:col-span-2 [&>*]:flex-1">
               <TryCard
                 maxLength={overview.maxQuestionLength}
                 disabled={!overview.keyConfigured}
                 onError={handleError}
               />
-              <PersonaCard overview={overview} />
             </div>
           </div>
         </>

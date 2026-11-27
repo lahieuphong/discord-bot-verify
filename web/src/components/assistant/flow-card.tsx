@@ -139,30 +139,3 @@ export function FlowCard({
     </Card>
   );
 }
-
-/** The assistant's role sentence and the answering rules added on top. */
-export function PersonaCard({ overview }: { overview: AssistantOverview }) {
-  return (
-    <Card className="gap-3">
-      <CardHeader>
-        <CardTitle className="text-base">Vai trò và cách trả lời</CardTitle>
-        <CardDescription>
-          Đầu chỉ dẫn gửi cho Gemini, trước phần kiến thức.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3 text-sm leading-relaxed">
-        <blockquote className="rounded-lg border-l-4 border-sky-300 bg-sky-50/60 px-4 py-3">
-          {overview.persona}
-        </blockquote>
-        <blockquote className="rounded-lg border-l-4 border-zinc-300 bg-muted/50 px-4 py-3 text-muted-foreground">
-          {overview.guidance}
-        </blockquote>
-        {overview.knowledgeMode === 'retrieval' && (
-          <blockquote className="rounded-lg border-l-4 border-amber-300 bg-amber-50/60 px-4 py-3 text-muted-foreground">
-            {overview.retrievalNote}
-          </blockquote>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
